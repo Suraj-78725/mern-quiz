@@ -207,6 +207,7 @@ const attemptQuiz = asyncHandler(async (req, res) => {
     return res
         .status(200)
         .json(new ApiResponse(200, {
+            attemptId: attempt._id,
             score,
             totalQuestions: quiz.questions.length,
             correctAnswers: updatedAnswers.filter(answer => answer.isCorrect).length
@@ -214,8 +215,79 @@ const attemptQuiz = asyncHandler(async (req, res) => {
 });
 
 const getAttempts = asyncHandler(async (req, res) => {
-    const attempts = await Attempt.find({ userId: req.user._id });
-    return res.status(200).json(new ApiResponse(200, attempts, "Attempts fetched successfully"));
+    // Get user ID from authenticated user
+    const userId = req.user._id;
+
+    // Find all attempts by this user and populate quiz details
+    const attempts = await Attempt.find({ userId })
+        .populate({
+            path: 'quizId',
+            select: 'title description' // Select the fields you want from quiz
+        })
+        .sort({ createdAt: -1 }) // Sort by newest first
+        .select('score createdAt completedAt'); // Select fields you want from attempt
+
+    if (!attempts) {
+        throw new ApiError(404, "No attempts found");
+    }
+
+    // Return attempts with quiz information
+    return res
+        .status(200)
+        .json(new ApiResponse(
+            200, 
+            attempts,
+            "Attempts fetched successfully"
+        ));
+});
+
+const getQuizResults = asyncHandler(async (req, res) => {
+    const { attemptId } = req.params;
+    const userId = req.user._id;
+
+    // Find the attempt
+    const attempt = await Attempt.findOne({
+        _id: attemptId,
+        userId: userId
+    });
+
+    if (!attempt) {
+        throw new ApiError(404, "Attempt not found");
+    }
+
+    // Find the quiz with questions
+    const quiz = await Quiz.findById(attempt.quizId);
+
+    if (!quiz) {
+        throw new ApiError(404, "Quiz not found");
+    }
+
+    // Prepare detailed results
+    const detailedResults = quiz.questions.map(question => {
+        const userAnswer = attempt.answers.find(
+            ans => ans.questionId.toString() === question._id.toString()
+        );
+
+        return {
+            questionId: question._id,
+            questionText: question.questionText,
+            options: question.options,
+            correctAnswerIndex: question.correctAnswerIndex,
+            explanation: question.explanation,
+            userSelectedOption: userAnswer ? userAnswer.selectedOptionIndex : null,
+            isCorrect: userAnswer ? userAnswer.isCorrect : false
+        };
+    });
+
+    return res.status(200).json(
+        new ApiResponse(200, {
+            quizTitle: quiz.title,
+            score: attempt.score,
+            totalQuestions: quiz.questions.length,
+            results: detailedResults,
+            attemptedAt: attempt.createdAt
+        }, "Quiz results fetched successfully")
+    );
 });
 
 
@@ -228,7 +300,8 @@ export {
     deleteQuiz,
     getLeaderboard,
     attemptQuiz,
-    getAttempts 
+    getAttempts,
+    getQuizResults
 };
 
 
