@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {RouterProvider, createBrowserRouter} from 'react-router-dom'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import ProtectedRoute from './ProtectedRoute'
 import AppLayout from './Layout/AppLayout'
 import Home from './pages/HomePage'
@@ -12,50 +12,46 @@ import CreateQuizPage from './pages/CreateQuizPage'
 import AttemptQuizPage from './pages/AttemptQuizPage'
 
 
-
-
-
-
 const router = createBrowserRouter([
   {
-   element:<AppLayout/>,
-  //  errorElement: we can add this also
-   children:[
-    {
-      path:'/',
-      element:<Home/>
-    }, 
-    {
-      path:"/login",
-      element:<Login/>
-    },
-    {
-      path:'/register',
-      element:<Register/>
-    },
-    
-    {
-      path:'/dashboard',
-      element:<ProtectedRoute><Dashboard/></ProtectedRoute>
-    },
-    {
-      path:'/result/:id',
-      element:<Resultpage/>
-    },
-    {
-      path:'/explaination/:id',
-      element:<ExplainationPage/>
-    },
-    {
-      path:'/create-quiz',
-      element:<CreateQuizPage/>
-    },
-    {
-      path:'/attempt-quiz/:quizId',
-      element:<AttemptQuizPage/>
-    },
+    element: <AppLayout />,
+    //  errorElement: we can add this also
+    children: [
+      {
+        path: '/',
+        element: <Home />
+      },
+      {
+        path: '/register',
+        element: <Register />
+      },
 
-   ]
+      {
+        path: '/dashboard',
+        element: <ProtectedRoute><Dashboard /></ProtectedRoute>
+      },
+      {
+        path: '/result/:id',
+        element: <Resultpage />
+      },
+      {
+        path: '/explaination/:id',
+        element: <ExplainationPage />
+      },
+      {
+        path: '/create-quiz',
+        element: <CreateQuizPage />
+      },
+      {
+        path: '/attempt-quiz/:quizId',
+        element: <AttemptQuizPage />
+      },
+
+    ]
+  },
+   {
+    path: "/login",
+    element: <Login />
   }
 ])
 
@@ -63,7 +59,7 @@ const router = createBrowserRouter([
 
 const App = () => {
   return (
-    <RouterProvider router={router}/>
+    <RouterProvider router={router} />
   );
 };
 

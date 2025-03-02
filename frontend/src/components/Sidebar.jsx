@@ -1,39 +1,41 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { LayoutDashboard, FilePlus, PlayCircle, KeyRound, Brain, User } from "lucide-react";
+import { ThemeContext } from "../context/ThemeContext";
 
 const Sidebar = () => {
+  const { theme } = useContext(ThemeContext);
+
   return (
-    <div className='w-[18%] min-h-screen border-r-2'>
-        <div className='flex flex-col gap-4 pt-6 pl-[20%] text-[15px]'>
-            <NavLink className="flex items-center gap-3 border border-gray-300
-            border-r-0 px-3 py-2 rounded-l" to="/add">
-                <img src={assets.add_icon} alt="" />
-                <p className='hidden md:block'>Dashboard</p>
-            </NavLink>
-
-            <NavLink className="flex items-center gap-3 border border-gray-300
-             border-r-0 px-3 py-2 rounded-l" to="/list">
-                <img src={assets.order_icon} alt="" />
-                <p className='hidden md:block'>Create Quiz</p>
-            </NavLink>
-
-            <NavLink className="flex items-center gap-3 border border-gray-300 
-            border-r-0 px-3 py-2 rounded-l" to="/orders">
-                <img src={assets.order_icon} alt="" />
-                <p className='hidden md:block'>Attempt Quiz</p>
-            </NavLink>
-
-            <NavLink className="flex items-center gap-3 border border-gray-300 
-            border-r-0 px-3 py-2 rounded-l" to="/orders">
-                <img src={assets.order_icon} alt="" />
-                <p className='hidden md:block'>Join Quiz By Id</p>
-            </NavLink>
-
-
-        </div>
+    <div className="w-2/5 hidden sm:block sm:w-1/4 md:w-1/5 h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg transition-all">
+      <div className="flex flex-col gap-4 text-[15px] p-4">
+        {/* Sidebar Links */}
+        {[
+          { to: "/dashboard", icon: <LayoutDashboard size={20} />, label: "Dashboard" },
+          { to: "/create-quiz", icon: <FilePlus size={20} />, label: "Create Quiz" },
+          { to: "/attempt-quiz", icon: <PlayCircle size={20} />, label: "Attempt Quiz" },
+          { to: "/join-quiz", icon: <KeyRound size={20} />, label: "Join Quiz By ID" },
+          { to: "/ai-quiz", icon: <Brain size={20} />, label: "AI Quiz" },
+          { to: "/profile", icon: <User size={20} />, label: "Profile" },
+        ].map((item) => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-300 ${
+                isActive
+                  ? "bg-blue-400 text-white shadow-md"
+                  : "hover:bg-blue-100 dark:hover:bg-gray-800"
+              }`
+            }
+          >
+            {item.icon}
+            <p className="hidden md:block">{item.label}</p>
+          </NavLink>
+        ))}
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;
