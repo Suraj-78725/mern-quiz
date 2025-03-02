@@ -10,7 +10,8 @@ import Resultpage from './pages/Resultpage'
 import ExplainationPage from './pages/ExplainationPage'
 import CreateQuizPage from './pages/CreateQuizPage'
 import AttemptQuizPage from './pages/AttemptQuizPage'
-
+import "react-toastify/dist/ReactToastify.css"; 
+import { ToastContainer, toast } from 'react-toastify';
 
 const router = createBrowserRouter([
   {
@@ -21,11 +22,6 @@ const router = createBrowserRouter([
         path: '/',
         element: <Home />
       },
-      {
-        path: '/register',
-        element: <Register />
-      },
-
       {
         path: '/dashboard',
         element: <ProtectedRoute><Dashboard /></ProtectedRoute>
@@ -52,14 +48,21 @@ const router = createBrowserRouter([
    {
     path: "/login",
     element: <Login />
-  }
+  },
+  {
+    path: '/register',
+    element: <Register />
+  },
 ])
 
 
 
 const App = () => {
   return (
+    <>
     <RouterProvider router={router} />
+    <ToastContainer />
+    </>
   );
 };
 
