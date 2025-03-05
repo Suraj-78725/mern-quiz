@@ -7,7 +7,8 @@ const Sidebar = () => {
   const { theme } = useContext(ThemeContext);
 
   return (
-    <div className="w-2/5 hidden sm:block sm:w-1/4 md:w-1/5 h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg transition-all">
+      <div className="w-[20%] fixed pt-16 hidden sm:block sm:w-[20%] min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white shadow-lg transition-all">
+
       <div className="flex flex-col gap-4 text-[15px] p-4">
         {/* Sidebar Links */}
         {[

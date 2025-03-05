@@ -12,6 +12,7 @@ import CreateQuizPage from './pages/CreateQuizPage'
 import AttemptQuizPage from './pages/AttemptQuizPage'
 import "react-toastify/dist/ReactToastify.css"; 
 import { ToastContainer, toast } from 'react-toastify';
+import Edit from './pages/Edit'
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,11 @@ const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: <ProtectedRoute><Dashboard /></ProtectedRoute>
+      },
+      {
+        path:'/edit-quiz/:id',
+        element:<Edit/>
+
       },
       {
         path: '/result/:id',

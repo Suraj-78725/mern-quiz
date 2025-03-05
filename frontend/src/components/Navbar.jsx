@@ -37,7 +37,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white px-6 py-3 transition-all">
+    <nav className=" fixed top-0 left-0 w-full z-50 bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white py-4 px-6 ">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <NavLink to="/" className="text-xl font-bold">

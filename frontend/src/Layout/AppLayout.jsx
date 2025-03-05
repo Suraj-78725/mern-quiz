@@ -5,16 +5,17 @@ import Navbar from "../components/Navbar";
 
 function AppLayout() {
     return (
-        <div className=" dark:bg-gray-800 dark:text-white flex-1 min-h-screen flex flex-col">
-            {/* Navbar */}
-            <Navbar />
+        <div className="dark:bg-gray-800 dark:text-white flex min-h-screen">
+            {/* Sidebar - Hidden on Mobile, Fixed on Larger Screens */}
+            <Sidebar />
 
-            <div className="flex flex-1">
-                {/* Sidebar */}
-                <Sidebar />
+            {/* Main Content Wrapper */}
+            <div className="flex flex-col flex-1 h-screen sm:ml-[20%] ml-0 w-full">
+                {/* Navbar - Fixed */}
+                <Navbar />
 
-                {/* Main Content */}
-                <main className="flex-1 p-6 overflow-auto">
+                {/* Main Content - Responsive Width */}
+                <main className="flex-1 overflow-auto p-6 mt-[4rem]">
                     <Outlet />
                 </main>
             </div>
