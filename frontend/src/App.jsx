@@ -7,9 +7,10 @@ import Login from './pages/LoginPage'
 import Register from './pages/RegisterPage'
 import Dashboard from './pages/DashboardPage'
 import Resultpage from './pages/Resultpage'
-import ExplainationPage from './pages/ExplainationPage'
+import ExplanationPage from './pages/ExplanationPage'
 import CreateQuizPage from './pages/CreateQuizPage'
 import AttemptQuizPage from './pages/AttemptQuizPage'
+import Historypage from './pages/HistoryPage'
 import "react-toastify/dist/ReactToastify.css"; 
 import { ToastContainer, toast } from 'react-toastify';
 import Edit from './pages/Edit'
@@ -34,21 +35,25 @@ const router = createBrowserRouter([
       },
       {
         path: '/result/:id',
-        element: <Resultpage />
+        element: <ProtectedRoute><Resultpage /></ProtectedRoute>
       },
       {
-        path: '/explaination/:id',
-        element: <ExplainationPage />
+        path: '/explanation',
+        element: <ProtectedRoute><ExplanationPage /></ProtectedRoute>
       },
       {
         path: '/create-quiz',
-        element: <CreateQuizPage />
+        element: <ProtectedRoute><CreateQuizPage /></ProtectedRoute>
       },
       {
-        path: '/attempt-quiz/:quizId',
-        element: <AttemptQuizPage />
+        path: '/attempt-quiz/:id',
+        element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute>
       },
+      {
+        path: '/history',
+        element: <ProtectedRoute><Historypage /></ProtectedRoute>
 
+      },
     ]
   },
    {

@@ -48,7 +48,7 @@ const Navbar = () => {
         <div className="hidden md:flex gap-6">
           <NavLink to="/dashboard" className="hover:text-blue-500">Dashboard</NavLink>
           <NavLink to="/create-quiz" className="hover:text-blue-500">Create Quiz</NavLink>
-          <NavLink to="/attempt-quiz" className="hover:text-blue-500">Attempt Quiz</NavLink>
+          <NavLink to="/history" className="hover:text-blue-500">History</NavLink>
           <NavLink to="/profile" className="hover:text-blue-500">Profile</NavLink>
           <button 
             onClick={handleLogout} 
@@ -82,7 +82,7 @@ const Navbar = () => {
         <div className="md:hidden flex flex-col gap-4 mt-4 bg-gray-200 dark:bg-gray-800 p-4 rounded-md transition-all duration-300 ease-in-out">
           <NavLink to="/dashboard" className="hover:text-blue-500">Dashboard</NavLink>
           <NavLink to="/create-quiz" className="hover:text-blue-500">Create Quiz</NavLink>
-          <NavLink to="/attempt-quiz" className="hover:text-blue-500">Attempt Quiz</NavLink>
+          <NavLink to="/history" className="hover:text-blue-500">History</NavLink>
           <NavLink to="/profile" className="hover:text-blue-500">Profile</NavLink>
 
           {/* Mobile Logout Button */}

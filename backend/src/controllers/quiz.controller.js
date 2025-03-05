@@ -53,7 +53,7 @@ const getUserQuizzes = asyncHandler(async (req, res) => {
 // Get a single quiz by ID
 const getQuizById = asyncHandler(async (req, res) => {
     const { quizId } = req.params;
-    
+     
     
     const quiz = await Quiz.findById(quizId).populate("createdBy", "username");
     if (!quiz) {

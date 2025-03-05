@@ -1,8 +1,11 @@
 import React from 'react'
+import AttemptQuiz from '../components/AttemptQuiz'
 
 function AttemptQuizPage() {
   return (
-    <div>AttemptQuizPage</div>
+    <div>
+      <AttemptQuiz/>
+    </div>
   )
 }
 

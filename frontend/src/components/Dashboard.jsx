@@ -36,7 +36,7 @@ const Dashboard = () => {
     if (!window.confirm("Are you sure you want to delete this quiz?")) return;
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/delete-quiz/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}/delete`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -77,9 +77,19 @@ const Dashboard = () => {
               className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-5 border border-gray-200 dark:border-gray-700"
             >
               <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{quiz.title}</h2>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{quiz.description}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{quiz.description.slice(0, 40) + (quiz.description.length > 40 ? "..." : "")}</p>
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 Created on: {new Date(quiz.createdAt).toLocaleDateString()}
+                <br />
+                Link:
+                <a
+                  href={`/attempt-quiz/${quiz._id}`}
+                  className="text-blue-500 hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {`${window.location.origin}/attempt-quiz/${quiz._id}`}
+                </a>
               </p>
 
               <div className="flex justify-between items-center mt-4">

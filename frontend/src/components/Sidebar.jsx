@@ -14,7 +14,7 @@ const Sidebar = () => {
         {[
           { to: "/dashboard", icon: <LayoutDashboard size={20} />, label: "Dashboard" },
           { to: "/create-quiz", icon: <FilePlus size={20} />, label: "Create Quiz" },
-          { to: "/attempt-quiz", icon: <PlayCircle size={20} />, label: "Attempt Quiz" },
+          { to: "/history", icon: <PlayCircle size={20} />, label: "History" },
           { to: "/join-quiz", icon: <KeyRound size={20} />, label: "Join Quiz By ID" },
           { to: "/ai-quiz", icon: <Brain size={20} />, label: "AI Quiz" },
           { to: "/profile", icon: <User size={20} />, label: "Profile" },
