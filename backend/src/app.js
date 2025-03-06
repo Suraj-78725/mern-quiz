@@ -28,4 +28,8 @@ import quizRouter from "./routes/quiz.routes.js"
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/quizzes",quizRouter);
 
+app.get('/',(req,res)=>{
+    res.send("API WORKING")
+})
+
 export { app };
