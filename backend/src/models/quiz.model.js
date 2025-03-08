@@ -6,6 +6,9 @@ const questionSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    questionImage: {
+        type: String // Store the image URL (optional)
+    },
     options: {
         type: [String],
         required: true
@@ -16,6 +19,9 @@ const questionSchema = new mongoose.Schema({
     },
     explanation: {
         type: String
+    },
+    explanationImage: {
+        type: String // Store the image URL for explanation (optional)
     }
 });
 

@@ -14,16 +14,18 @@ import Historypage from './pages/HistoryPage'
 import "react-toastify/dist/ReactToastify.css"; 
 import { ToastContainer, toast } from 'react-toastify';
 import Edit from './pages/Edit'
+import ProfilePage from './pages/ProfilePage'
+import JoinQuizPage from './pages/JoinQuizPage'
 
 const router = createBrowserRouter([
   {
     element: <AppLayout />,
     //  errorElement: we can add this also
     children: [
-      {
-        path: '/',
-        element: <Home />
-      },
+      // {
+      //   path: '/',
+      //   element: <Home />
+      // },
       {
         path: '/dashboard',
         element: <ProtectedRoute><Dashboard /></ProtectedRoute>
@@ -54,7 +56,21 @@ const router = createBrowserRouter([
         element: <ProtectedRoute><Historypage /></ProtectedRoute>
 
       },
+      {
+        path: '/profile',
+        element: <ProtectedRoute><ProfilePage/></ProtectedRoute>
+
+      },
+      {
+        path: '/join-quiz',
+        element: <ProtectedRoute><JoinQuizPage/></ProtectedRoute>
+
+      },
     ]
+  },
+  {
+    path: '/',
+    element: <Login />
   },
    {
     path: "/login",

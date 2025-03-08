@@ -3,31 +3,61 @@ import { ApiError } from "../utils/ApiError.js";
 import { Quiz } from "../models/quiz.model.js";
 import { Attempt} from "../models/attempt.model.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 
 const createQuiz = asyncHandler(async (req, res) => {
-    const { title, description, questions, timeLimit } = req.body;
+    const { title, description, timeLimit } = req.body;
 
-    if (!title || !questions || questions.length === 0) {
-        throw new ApiError(400, "Title and at least one question are required");
+    if (!title) throw new ApiError(400, "Title is required");
+
+    // Parse `questions` JSON string from form-data
+    let questions;
+    try {
+        questions = JSON.parse(req.body.questions);
+    } catch (error) {
+        throw new ApiError(400, "Invalid questions format");
+    }
+
+    if (!Array.isArray(questions) || questions.length === 0) {
+        throw new ApiError(400, "At least one question is required");
+    }
+
+    // Handle question and explanation images
+    const questionImages = req.files?.questionImage || [];
+    const explanationImages = req.files?.explanationImage || [];
+
+    for (let i = 0; i < questions.length; i++) {
+        if (questionImages[i]?.path) {
+            const uploadedQuestionImage = await uploadOnCloudinary(questionImages[i].path);
+            questions[i].questionImage = uploadedQuestionImage?.secure_url || null;  // ✅ Extract only the URL
+        } else {
+            questions[i].questionImage = null;
+        }
+
+        if (explanationImages[i]?.path) {
+            const uploadedExplanationImage = await uploadOnCloudinary(explanationImages[i].path);
+            questions[i].explanationImage = uploadedExplanationImage?.secure_url || null;  // ✅ Extract only the URL
+        } else {
+            questions[i].explanationImage = null;
+        }
     }
 
     const quiz = await Quiz.create({
         title,
         description,
-        questions,
         timeLimit,
-        createdBy: req.user._id, // Assumes req.user is populated via middleware
+        questions,
+        createdBy: req.user._id,
     });
 
-    const shareableLink = `${req.protocol}://${req.get('host')}/api/quizzes/${quiz._id}/attempt`;
-
-    return res
-        .status(201)
-        .json(new ApiResponse(201, {quiz,shareableLink}, "Quiz created successfully"));
+    return res.status(201).json(new ApiResponse(201, { quiz }, "Quiz created successfully"));
 });
+
+
+
 
 
 const getUserQuizzes = asyncHandler(async (req, res) => {
