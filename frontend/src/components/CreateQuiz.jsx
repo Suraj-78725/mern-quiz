@@ -7,68 +7,114 @@ import { Plus, Trash2, Clock, CheckCircle, HelpCircle, BookOpen, Save, FileText,
 const CreateQuiz = () => {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
-  const [timeLimit, setTimeLimit] = useState()
+  const [timeLimit, setTimeLimit] = useState(30)
   const [questions, setQuestions] = useState([
     {
       questionText: "",
-      options: ["", "", "", ""], // Default 4 empty options
+      options: ["", "", "", ""],
       correctAnswerIndex: 0,
       explanation: "",
+      questionImages: [], // Array to store multiple question images
+      explanationImages: [], // Array to store multiple explanation images
     },
   ])
 
+  // Handle image uploads for questions and explanations
+  const handleImageChange = (index, field, files) => {
+    const updatedQuestions = [...questions]
+    const newImages = Array.from(files) // Convert FileList to an array
+    updatedQuestions[index][field] = [...updatedQuestions[index][field], ...newImages] // Append new images to existing ones
+    setQuestions(updatedQuestions)
+  }
+
+  // Handle changes to question text, options, etc.
   const handleQuestionChange = (index, field, value) => {
     const updatedQuestions = [...questions]
     updatedQuestions[index][field] = value
     setQuestions(updatedQuestions)
   }
 
+  // Handle changes to answer options
   const handleOptionChange = (qIndex, oIndex, value) => {
     const updatedQuestions = [...questions]
     updatedQuestions[qIndex].options[oIndex] = value
     setQuestions(updatedQuestions)
   }
 
+  // Add a new question
   const addQuestion = () => {
     setQuestions([
       ...questions,
-      { questionText: "", options: ["", "", "", ""], correctAnswerIndex: 0, explanation: "" },
+      {
+        questionText: "",
+        options: ["", "", "", ""],
+        correctAnswerIndex: 0,
+        explanation: "",
+        questionImages: [],
+        explanationImages: [],
+      },
     ])
   }
 
+  // Remove a question
   const removeQuestion = (index) => {
     const updatedQuestions = questions.filter((_, i) => i !== index)
     setQuestions(updatedQuestions)
   }
 
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const quizData = {
-      title,
-      description,
-      timeLimit: Number(timeLimit),
-      questions,
-    }
+    const formData = new FormData()
+    formData.append("title", title)
+    formData.append("description", description)
+    formData.append("timeLimit", Number(timeLimit))
+
+    // Prepare questions without images
+    const questionsWithoutImages = questions.map(({ questionImages, explanationImages, ...rest }) => rest)
+    formData.append("questions", JSON.stringify(questionsWithoutImages))
+
+    // Attach images with an index
+    questions.forEach((q, index) => {
+      if (q.questionImages && q.questionImages.length > 0) {
+        q.questionImages.forEach((file, fileIndex) => {
+          formData.append(`questionImage_${index}`, file) // Append each file with the correct index
+        })
+      }
+      if (q.explanationImages && q.explanationImages.length > 0) {
+        q.explanationImages.forEach((file, fileIndex) => {
+          formData.append(`explanationImage_${index}`, file) // Append each file with the correct index
+        })
+      }
+    })
 
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/create`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-        body: JSON.stringify(quizData),
+        body: formData,
       })
 
       const result = await response.json()
-
       if (response.ok) {
         toast.success("Quiz Created Successfully!")
+        // Reset form
         setTitle("")
         setDescription("")
         setTimeLimit(30)
-        setQuestions([{ questionText: "", options: ["", "", "", ""], correctAnswerIndex: 0, explanation: "" }])
+        setQuestions([
+          {
+            questionText: "",
+            options: ["", "", "", ""],
+            correctAnswerIndex: 0,
+            explanation: "",
+            questionImages: [],
+            explanationImages: [],
+          },
+        ])
       } else {
         toast.error(result.message || "Failed to create quiz")
       }
@@ -85,6 +131,7 @@ const CreateQuiz = () => {
       </h2>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        {/* Quiz Title */}
         <div className="space-y-1">
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
             <FileText className="w-4 h-4" />
@@ -100,6 +147,7 @@ const CreateQuiz = () => {
           />
         </div>
 
+        {/* Quiz Description */}
         <div className="space-y-1">
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
             <AlignLeft className="w-4 h-4" />
@@ -115,6 +163,7 @@ const CreateQuiz = () => {
           />
         </div>
 
+        {/* Time Limit */}
         <div className="space-y-1">
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
             <Clock className="w-4 h-4" />
@@ -157,6 +206,7 @@ const CreateQuiz = () => {
               </div>
 
               <div className="space-y-4">
+                {/* Question Text */}
                 <input
                   type="text"
                   placeholder="Enter your question here"
@@ -166,8 +216,29 @@ const CreateQuiz = () => {
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
                 />
 
-                {/* Options */}
-                <div className="mt-3 space-y-3 ">
+                {/* Question Images */}
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => handleImageChange(qIndex, "questionImages", e.target.files)}
+                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                />
+
+                {/* Display Uploaded Question Images */}
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {q.questionImages?.map((image, imgIndex) => (
+                    <img
+                      key={imgIndex}
+                      src={URL.createObjectURL(image)}
+                      alt={`Uploaded question image ${imgIndex + 1}`}
+                      className="w-16 h-16 object-cover rounded-md border"
+                    />
+                  ))}
+                </div>
+
+                {/* Answer Options */}
+                <div className="mt-3 space-y-3">
                   <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Answer Options</p>
                   {q.options.map((option, oIndex) => (
                     <div key={oIndex} className="flex items-center gap-2">
@@ -195,6 +266,7 @@ const CreateQuiz = () => {
                   ))}
                 </div>
 
+                {/* Explanation */}
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
                     <BookOpen className="w-4 h-4" />
@@ -208,6 +280,27 @@ const CreateQuiz = () => {
                     required
                     className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
                   />
+
+                  {/* Explanation Images */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handleImageChange(qIndex, "explanationImages", e.target.files)}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+
+                  {/* Display Uploaded Explanation Images */}
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {q.explanationImages?.map((image, imgIndex) => (
+                      <img
+                        key={imgIndex}
+                        src={URL.createObjectURL(image)}
+                        alt={`Uploaded explanation image ${imgIndex + 1}`}
+                        className="w-16 h-16 object-cover rounded-md border"
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

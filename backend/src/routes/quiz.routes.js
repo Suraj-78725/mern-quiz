@@ -19,10 +19,7 @@ const router = express.Router();
 router.get("/user/attempts", verifyJWT, getAttempts);
 
 // Quiz routes
-router.post("/create", verifyJWT, upload.fields([
-    { name: "questionImage", maxCount: 4 },  // For question images
-    { name: "explanationImage", maxCount: 4 } // For explanation images
-  ]), createQuiz);
+router.post("/create", verifyJWT, upload.any(), createQuiz);
   
 router.get("/my-quizzes", verifyJWT, getUserQuizzes);
 

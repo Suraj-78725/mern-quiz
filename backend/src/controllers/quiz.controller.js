@@ -8,58 +8,82 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 
 
+
 const createQuiz = asyncHandler(async (req, res) => {
     const { title, description, timeLimit } = req.body;
-
+  
     if (!title) throw new ApiError(400, "Title is required");
-
+  
     // Parse `questions` JSON string from form-data
     let questions;
     try {
-        questions = JSON.parse(req.body.questions);
+      questions = JSON.parse(req.body.questions);
     } catch (error) {
-        throw new ApiError(400, "Invalid questions format");
+      throw new ApiError(400, "Invalid questions format");
     }
-
+  
     if (!Array.isArray(questions) || questions.length === 0) {
-        throw new ApiError(400, "At least one question is required");
+      throw new ApiError(400, "At least one question is required");
     }
-
-    // Handle question and explanation images
-    const questionImages = req.files?.questionImage || [];
-    const explanationImages = req.files?.explanationImage || [];
-
-    for (let i = 0; i < questions.length; i++) {
-        if (questionImages[i]?.path) {
-            const uploadedQuestionImage = await uploadOnCloudinary(questionImages[i].path);
-            questions[i].questionImage = uploadedQuestionImage?.secure_url || null;  // ✅ Extract only the URL
-        } else {
-            questions[i].questionImage = null;
-        }
-
-        if (explanationImages[i]?.path) {
-            const uploadedExplanationImage = await uploadOnCloudinary(explanationImages[i].path);
-            questions[i].explanationImage = uploadedExplanationImage?.secure_url || null;  // ✅ Extract only the URL
-        } else {
-            questions[i].explanationImage = null;
-        }
-    }
-
-    const quiz = await Quiz.create({
-        title,
-        description,
-        timeLimit,
-        questions,
-        createdBy: req.user._id,
+  
+    // Access all uploaded files
+    const files = req.files || [];
+  
+    // Organize files by type and index
+    const groupedQuestionImages = {};
+    const groupedExplanationImages = {};
+  
+    files.forEach((file) => {
+      const [fieldType, index] = file.fieldname.split("_"); // Split fieldname into type and index
+  
+      if (fieldType === "questionImage") {
+        if (!groupedQuestionImages[index]) groupedQuestionImages[index] = [];
+        groupedQuestionImages[index].push(file);
+      } else if (fieldType === "explanationImage") {
+        if (!groupedExplanationImages[index]) groupedExplanationImages[index] = [];
+        groupedExplanationImages[index].push(file);
+      }
     });
-
+  
+    // Process questions and upload images
+    for (let i = 0; i < questions.length; i++) {
+      questions[i].questionImages = [];
+      questions[i].explanationImages = [];
+  
+      // Upload multiple question images
+      if (groupedQuestionImages[i]) {
+        for (let img of groupedQuestionImages[i]) {
+          const uploadedImg = await uploadOnCloudinary(img.path);
+          if (uploadedImg?.secure_url) {
+            questions[i].questionImages.push(uploadedImg.secure_url);
+          }
+        }
+      }
+  
+      // Upload multiple explanation images
+      if (groupedExplanationImages[i]) {
+        for (let img of groupedExplanationImages[i]) {
+          const uploadedImg = await uploadOnCloudinary(img.path);
+          if (uploadedImg?.secure_url) {
+            questions[i].explanationImages.push(uploadedImg.secure_url);
+          }
+        }
+      }
+    }
+  
+    // Create the quiz
+    const quiz = await Quiz.create({
+      title,
+      description,
+      timeLimit,
+      questions,
+      createdBy: req.user._id,
+    });
+  
     return res.status(201).json(new ApiResponse(201, { quiz }, "Quiz created successfully"));
-});
+  });
 
-
-
-
-
+  
 const getUserQuizzes = asyncHandler(async (req, res) => {
     // Get the user ID from the JWT (which is available in req.user due to the verifyJWT middleware)
     const userId = req.user._id;
