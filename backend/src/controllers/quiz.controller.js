@@ -71,6 +71,9 @@ const createQuiz = asyncHandler(async (req, res) => {
       }
     }
   
+    // Log the updated questions array for debugging
+    console.log("Updated questions:", questions);
+  
     // Create the quiz
     const quiz = await Quiz.create({
       title,
