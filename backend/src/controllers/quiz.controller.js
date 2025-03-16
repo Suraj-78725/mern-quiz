@@ -53,6 +53,8 @@ const createQuiz = asyncHandler(async (req, res) => {
       // Upload multiple question images
       if (groupedQuestionImages[i]) {
         for (let img of groupedQuestionImages[i]) {
+            console.log(img.path);
+            
           const uploadedImg = await uploadOnCloudinary(img.path);
           if (uploadedImg?.secure_url) {
             questions[i].questionImages.push(uploadedImg.secure_url);
