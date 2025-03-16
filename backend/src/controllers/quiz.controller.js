@@ -56,6 +56,9 @@ const createQuiz = asyncHandler(async (req, res) => {
             console.log(img.path);
             
           const uploadedImg = await uploadOnCloudinary(img.path);
+
+          console.log(uploadedImg);
+          
           if (uploadedImg?.secure_url) {
             questions[i].questionImages.push(uploadedImg.secure_url);
           }
