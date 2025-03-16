@@ -19,8 +19,8 @@ const uploadOnCloudinary = async (localFilePath) => {
 
         console.log("I am not returnred");
 
-        cloudinary.config({
-          cloud_name: process.env.CLOUDINARY_CLOUD_NAME, // Must match Vercel's variable name
+        console.log("Cloudinary Config:", {
+          cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
           api_key: process.env.CLOUDINARY_API_KEY,
           api_secret: process.env.CLOUDINARY_API_SECRET,
         });
