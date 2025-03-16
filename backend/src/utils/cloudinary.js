@@ -9,6 +9,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET 
 });
 
+console.log(process.env.CLOUDINARY_CLOUD_NAME);
+
 const uploadOnCloudinary = async (localFilePath) => {
     try {
         if (!localFilePath) return null
