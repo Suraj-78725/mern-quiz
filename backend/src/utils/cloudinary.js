@@ -9,7 +9,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET 
 });
 
-console.log(process.env.CLOUDINARY_CLOUD_NAME);
+
 
 const uploadOnCloudinary = async (localFilePath) => {
     try {
@@ -18,6 +18,8 @@ const uploadOnCloudinary = async (localFilePath) => {
 
 
         console.log("I am not returnred");
+
+        console.log(process.env.CLOUDINARY_CLOUD_NAME);
         
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto"
