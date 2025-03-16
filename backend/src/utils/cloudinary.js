@@ -4,7 +4,7 @@ import fs from "fs"
 
 
 cloudinary.config({ 
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  cloud_name: dbrm5pijb, 
   api_key: process.env.CLOUDINARY_API_KEY, 
   api_secret: process.env.CLOUDINARY_API_SECRET 
 });
@@ -19,7 +19,11 @@ const uploadOnCloudinary = async (localFilePath) => {
 
         console.log("I am not returnred");
 
-        console.log(process.env.CLOUDINARY_CLOUD_NAME);
+        cloudinary.config({
+          cloud_name: process.env.CLOUDINARY_CLOUD_NAME, // Must match Vercel's variable name
+          api_key: process.env.CLOUDINARY_API_KEY,
+          api_secret: process.env.CLOUDINARY_API_SECRET,
+        });
         
         const response = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto"
