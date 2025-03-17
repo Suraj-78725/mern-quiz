@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Save, Plus, Trash2, Clock, HelpCircle, BookOpen, AlertCircle, Loader2 } from 'lucide-react';
 
 const EditQuiz = () => {
   const { id } = useParams();
@@ -9,9 +10,11 @@ const EditQuiz = () => {
   const [quiz, setQuiz] = useState({
     title: "",
     description: "",
+    timeLimit: 30,
     questions: [],
   });
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     fetchQuiz();
@@ -63,7 +66,35 @@ const EditQuiz = () => {
     });
   };
 
+  const handleRemoveQuestion = (index) => {
+    if (quiz.questions.length <= 1) {
+      toast.error("Quiz must have at least one question");
+      return;
+    }
+    
+    const updatedQuestions = quiz.questions.filter((_, i) => i !== index);
+    setQuiz({ ...quiz, questions: updatedQuestions });
+  };
+
   const handleSave = async () => {
+    // Validate quiz data
+    if (!quiz.title.trim()) {
+      toast.error("Quiz title is required");
+      return;
+    }
+    
+    if (quiz.questions.some(q => !q.questionText.trim())) {
+      toast.error("All questions must have text");
+      return;
+    }
+    
+    if (quiz.questions.some(q => q.options.some(opt => !opt.trim()))) {
+      toast.error("All options must have text");
+      return;
+    }
+    
+    setSaving(true);
+    
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}/update`, {
         method: "PATCH",
@@ -79,99 +110,235 @@ const EditQuiz = () => {
         toast.success("Quiz updated successfully!");
         navigate("/dashboard");
       } else {
-        toast.error("Failed to update quiz.");
+        toast.error(data.message || "Failed to update quiz.");
       }
     } catch (error) {
       toast.error("An error occurred while updating the quiz.");
+    } finally {
+      setSaving(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-4xl mx-auto p-6 dark:bg-gray-900 dark:text-white">
-      <h1 className="text-2xl font-bold mb-4">Edit Quiz</h1>
+    <div className="max-w-4xl mx-auto">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Edit Quiz</h1>
+        
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-70"
+        >
+          {saving ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4" />
+              Save Changes
+            </>
+          )}
+        </button>
+      </div>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <div>
-          {/* Quiz Title */}
-          <input
-            type="text"
-            name="title"
-            value={quiz.title}
-            onChange={handleChange}
-            className="w-full p-2 border rounded mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            placeholder="Quiz Title"
-          />
-
-          {/* Quiz Description */}
-          <textarea
-            name="description"
-            value={quiz.description}
-            onChange={handleChange}
-            className="w-full p-2 border rounded mb-4 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-            placeholder="Quiz Description"
-          />
-
-          {/* Questions Section */}
-          {quiz.questions.map((q, qIndex) => (
-            <div key={qIndex} className="border p-4 rounded mb-4 dark:border-gray-700">
-              {/* Question Text */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mb-8">
+        <div className="p-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quiz Details</h2>
+          
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Quiz Title
+              </label>
               <input
+                id="title"
+                name="title"
                 type="text"
-                value={q.questionText}
-                onChange={(e) => handleQuestionChange(qIndex, "questionText", e.target.value)}
-                className="w-full p-2 border rounded mb-2 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                placeholder={`Question ${qIndex + 1}`}
-              />
-
-              {/* Answer Options */}
-              {q.options.map((option, oIndex) => (
-                <div key={oIndex} className="flex items-center mb-2">
-                  <input
-                    type="text"
-                    value={option}
-                    onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)}
-                    className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-white"
-                    placeholder={`Option ${oIndex + 1}`}
-                  />
-                  <input
-                    type="radio"
-                    name={`correctAnswer-${qIndex}`}
-                    checked={q.correctAnswerIndex === oIndex}
-                    onChange={() => handleQuestionChange(qIndex, "correctAnswerIndex", oIndex)}
-                    className="ml-2"
-                  />
-                </div>
-              ))}
-
-              {/* Explanation */}
-              <textarea
-                value={q.explanation}
-                onChange={(e) => handleQuestionChange(qIndex, "explanation", e.target.value)}
-                className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-700 dark:text-white mt-2"
-                placeholder="Explanation (Optional)"
+                value={quiz.title}
+                onChange={handleChange}
+                placeholder="Enter quiz title"
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
               />
             </div>
-          ))}
+            
+            <div>
+              <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Description
+              </label>
+              <textarea
+                id="description"
+                name="description"
+                value={quiz.description}
+                onChange={handleChange}
+                placeholder="Enter quiz description"
+                rows={3}
+                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="timeLimit" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Time Limit (minutes)
+              </label>
+              <div className="flex items-center">
+                <Clock className="h-5 w-5 text-gray-400 mr-2" />
+                <input
+                  id="timeLimit"
+                  name="timeLimit"
+                  type="number"
+                  min="1"
+                  max="180"
+                  value={quiz.timeLimit}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          {/* Add Question Button */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <HelpCircle className="h-5 w-5 text-blue-500" />
+            Questions
+          </h2>
+          
           <button
             onClick={handleAddQuestion}
-            className="bg-blue-500 text-white px-4 py-2 rounded mt-2 hover:bg-blue-600"
+            className="inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
           >
-            + Add Question
-          </button>
-
-          {/* Save Button */}
-          <button
-            onClick={handleSave}
-            className="bg-green-500 text-white px-4 py-2 rounded mt-2 ml-4 hover:bg-green-600"
-          >
-            Save Quiz
+            <Plus className="h-4 w-4" />
+            Add Question
           </button>
         </div>
-      )}
+        
+        <div className="space-y-6">
+          {quiz.questions.map((question, qIndex) => (
+            <div 
+              key={qIndex} 
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700"
+            >
+              <div className="p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-gray-900 dark:text-white">Question {qIndex + 1}</h3>
+                  
+                  <button
+                    onClick={() => handleRemoveQuestion(qIndex)}
+                    className="inline-flex items-center justify-center p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+                    aria-label="Remove question"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label 
+                      htmlFor={`question-${qIndex}`} 
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+                    >
+                      Question Text
+                    </label>
+                    <input
+                      id={`question-${qIndex}`}
+                      type="text"
+                      value={question.questionText}
+                      onChange={(e) => handleQuestionChange(qIndex, "questionText", e.target.value)}
+                      placeholder="Enter question text"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                    />
+                  </div>
+                  
+                  <div>
+                    <p className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Answer Options
+                    </p>
+                    
+                    <div className="space-y-2">
+                      {question.options.map((option, oIndex) => (
+                        <div key={oIndex} className="flex items-center gap-2">
+                          <input
+                            id={`option-${qIndex}-${oIndex}`}
+                            type="radio"
+                            name={`correctAnswer-${qIndex}`}
+                            checked={question.correctAnswerIndex === oIndex}
+                            onChange={() => handleQuestionChange(qIndex, "correctAnswerIndex", oIndex)}
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600"
+                          />
+                          <input
+                            type="text"
+                            value={option}
+                            onChange={(e) => handleOptionChange(qIndex, oIndex, e.target.value)}
+                            placeholder={`Option ${oIndex + 1}`}
+                            className="flex-1 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label 
+                      htmlFor={`explanation-${qIndex}`} 
+                      className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-1"
+                    >
+                      <BookOpen className="h-4 w-4 text-blue-500" />
+                      Explanation
+                    </label>
+                    <textarea
+                      id={`explanation-${qIndex}`}
+                      value={question.explanation}
+                      onChange={(e) => handleQuestionChange(qIndex, "explanation", e.target.value)}
+                      placeholder="Explain the correct answer"
+                      rows={2}
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        >
+          Cancel
+        </button>
+        
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-70"
+        >
+          {saving ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            <>
+              <Save className="h-4 w-4" />
+              Save Changes
+            </>
+          )}
+        </button>
+      </div>
     </div>
   );
 };

@@ -47,10 +47,7 @@ const router = createBrowserRouter([
         path: '/create-quiz',
         element: <ProtectedRoute><CreateQuizPage /></ProtectedRoute>
       },
-      {
-        path: '/attempt-quiz/:id',
-        element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute>
-      },
+      
       {
         path: '/history',
         element: <ProtectedRoute><Historypage /></ProtectedRoute>
@@ -79,6 +76,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />
+  },
+  {
+    path: '/attempt-quiz/:id',
+    element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute>
   },
 ])
 

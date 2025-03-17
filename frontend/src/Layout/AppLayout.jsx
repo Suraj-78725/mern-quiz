@@ -5,7 +5,7 @@ import Navbar from "../components/Navbar";
 
 function AppLayout() {
     return (
-        <div className="dark:bg-gray-800 dark:text-white flex min-h-screen">
+        <div className="dark:bg-gray-800 sm:pl-10 dark:text-white flex min-h-screen">
             {/* Sidebar - Hidden on Mobile, Fixed on Larger Screens */}
             <Sidebar />
 
