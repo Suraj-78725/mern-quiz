@@ -8,7 +8,8 @@ import {
     getLeaderboard,
     attemptQuiz,
     getAttempts,
-    getQuizResults
+    getQuizResults,
+    editQuizById
 } from "../controllers/quiz.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -25,6 +26,7 @@ router.get("/my-quizzes", verifyJWT, getUserQuizzes);
 
 // Routes with parameters
 router.get("/:quizId", verifyJWT, getQuizById);
+router.get("/edit/:quizId", verifyJWT, editQuizById);
 router.patch("/:quizId/update", verifyJWT, updateQuiz);
 router.delete("/:quizId/delete", verifyJWT, deleteQuiz);
 router.get("/:quizId/leaderboard", verifyJWT, getLeaderboard);

@@ -22,7 +22,7 @@ const EditQuiz = () => {
 
   const fetchQuiz = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/edit/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -197,7 +197,7 @@ const EditQuiz = () => {
                   name="timeLimit"
                   type="number"
                   min="1"
-                  max="180"
+                  // max="180"
                   value={quiz.timeLimit}
                   onChange={handleChange}
                   className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
