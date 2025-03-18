@@ -17,6 +17,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Edit from './pages/Edit'
 import ProfilePage from './pages/ProfilePage'
 import JoinQuizPage from './pages/JoinQuizPage'
+import HomePage from './pages/HomePage'
 
 const router = createBrowserRouter([
   {
@@ -72,7 +73,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/',
-    element: <Login />
+    element: <HomePage />
   },
    {
     path: "/login",
