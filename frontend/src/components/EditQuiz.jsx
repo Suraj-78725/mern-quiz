@@ -10,7 +10,7 @@ const EditQuiz = () => {
   const [quiz, setQuiz] = useState({
     title: "",
     description: "",
-    timeLimit: 30,
+    timeLimit: 0,
     questions: [],
   });
   const [loading, setLoading] = useState(true);
@@ -78,6 +78,8 @@ const EditQuiz = () => {
 
   const handleSave = async () => {
     // Validate quiz data
+
+    // console.log(quiz)
     if (!quiz.title.trim()) {
       toast.error("Quiz title is required");
       return;
@@ -214,14 +216,7 @@ const EditQuiz = () => {
             <HelpCircle className="h-5 w-5 text-blue-500" />
             Questions
           </h2>
-          
-          <button
-            onClick={handleAddQuestion}
-            className="inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
-          >
-            <Plus className="h-4 w-4" />
-            Add Question
-          </button>
+       
         </div>
         
         <div className="space-y-6">
@@ -312,6 +307,15 @@ const EditQuiz = () => {
           ))}
         </div>
       </div>
+
+         
+      <button
+            onClick={handleAddQuestion}
+            className="inline-flex items-center justify-center gap-2 px-3 py-1.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            Add Question
+          </button>
       
       <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
         <button
