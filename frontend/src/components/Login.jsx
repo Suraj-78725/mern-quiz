@@ -7,54 +7,59 @@ import { toast } from "react-toastify"
 import { LogIn, Loader2, AlertCircle } from "lucide-react"
 
 const Login = () => {
-  const { theme } = useContext(ThemeContext)
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state?.from?.pathname || "/dashboard"
-
-  const [identifier, setIdentifier] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const { theme } = useContext(ThemeContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard"; // Fallback to dashboard
+  console.log(location);
+  
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!identifier.trim() || !password.trim()) {
-      setError("Please enter both email/username and password")
-      return
+      setError("Please enter both email/username and password");
+      return;
     }
 
-    setIsLoading(true)
-    setError("")
+    setIsLoading(true);
+    setError("");
 
-    const isEmail = /\S+@\S+\.\S+/.test(identifier)
-    const userData = isEmail ? { email: identifier, password } : { username: identifier, password }
+    const isEmail = /\S+@\S+\.\S+/.test(identifier);
+    const userData = isEmail
+      ? { email: identifier, password }
+      : { username: identifier, password };
 
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
-      })
+      });
 
-      const result = await response.json()
+      const result = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("accessToken", result.data.accessToken)
-        toast.success("Logged in successfully!")
-        navigate(from, { replace: true })
+        localStorage.setItem("accessToken", result.data.accessToken);
+        toast.success("Logged in successfully!");
+
+        // Redirect to the original page or dashboard
+        navigate(from, { replace: true });
       } else {
-        setError(result.message || "Login failed")
-        toast.error(result.message || "Login failed")
+        setError(result.message || "Login failed");
+        toast.error(result.message || "Login failed");
       }
     } catch (err) {
-      setError("Error occurred during login")
-      toast.error("Error occurred during login")
+      setError("Error occurred during login");
+      toast.error("Error occurred during login");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
@@ -97,10 +102,7 @@ const Login = () => {
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                     Password
                   </label>
-                  <a
-                    href="#"
-                    className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
-                  >
+                  <a href="#" className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300">
                     Forgot password?
                   </a>
                 </div>
@@ -151,6 +153,7 @@ const Login = () => {
     </div>
   )
 }
+
 
 export default Login
 

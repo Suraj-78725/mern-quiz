@@ -115,17 +115,21 @@ const getUserQuizzes = asyncHandler(async (req, res) => {
 // Get a single quiz by ID
 const getQuizById = asyncHandler(async (req, res) => {
     const { quizId } = req.params;
-     
-    
-    const quiz = await Quiz.findById(quizId).populate("createdBy", "username");
+  
+    // Exclude correctAnswerIndex and explanation using select
+    const quiz = await Quiz.findById(quizId)
+      .select("-questions.correctAnswerIndex -questions.explanation")
+      .populate("createdBy", "username");
+  
     if (!quiz) {
-        throw new ApiError(404, "Quiz not found");
+      throw new ApiError(404, "Quiz not found");
     }
-
+  
     return res
-        .status(200)
-        .json(new ApiResponse(200, quiz, "Quiz fetched successfully"));
-});
+      .status(200)
+      .json(new ApiResponse(200, quiz, "Quiz fetched successfully"));
+  });
+  
 
 
 const updateQuiz = asyncHandler(async (req, res) => {
