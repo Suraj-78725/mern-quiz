@@ -100,7 +100,7 @@ const getUserQuizzes = asyncHandler(async (req, res) => {
     const quizzes = await Quiz.find({ createdBy: userId })
         .sort({ createdAt: -1 }) // Optional: Sort by creation date (newest first)
         .populate('createdBy', 'username') // Optional: Populate the creator's username (if you want it in the response)
-        .select('title description createdAt'); // Optional: Select specific fields to return (e.g., title, description, createdAt)
+        // .select('title description createdAt'); // Optional: Select specific fields to return (e.g., title, description, createdAt)
 
     // If no quizzes found, return a message
     if (!quizzes || quizzes.length === 0) {
