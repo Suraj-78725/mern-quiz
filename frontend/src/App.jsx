@@ -19,75 +19,72 @@ import ProfilePage from './pages/ProfilePage'
 import JoinQuizPage from './pages/JoinQuizPage'
 import HomePage from './pages/HomePage'
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      element: <AppLayout />,
+      children: [
+        {
+          path: '/dashboard',
+          element: <ProtectedRoute><Dashboard /></ProtectedRoute>
+        },
+        {
+          path:'/edit-quiz/:id',
+          element:<Edit/>
+        },
+        {
+          path: '/result/:id',
+          element: <ProtectedRoute><Resultpage /></ProtectedRoute>
+        },
+        {
+          path: '/leaderboard/:id',
+          element: <ProtectedRoute><LeaderBoardPage /></ProtectedRoute>
+        },
+        {
+          path: '/explanation',
+          element: <ProtectedRoute><ExplanationPage /></ProtectedRoute>
+        },
+        {
+          path: '/create-quiz',
+          element: <ProtectedRoute><CreateQuizPage /></ProtectedRoute>
+        },
+        {
+          path: '/history',
+          element: <ProtectedRoute><Historypage /></ProtectedRoute>
+        },
+        {
+          path: '/profile',
+          element: <ProtectedRoute><ProfilePage/></ProtectedRoute>
+        },
+        {
+          path: '/join-quiz',
+          element: <ProtectedRoute><JoinQuizPage/></ProtectedRoute>
+        },
+      ]
+    },
+    {
+      path: '/',
+      element: <HomePage />
+    },
+    {
+      path: "/login",
+      element: <Login />
+    },
+    {
+      path: '/register',
+      element: <Register />
+    },
+    {
+      path: '/attempt-quiz/:id',
+      element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute>
+    },
+  ],
   {
-    element: <AppLayout />,
-    //  errorElement: we can add this also
-    children: [
-      // {
-      //   path: '/',
-      //   element: <Home />
-      // },
-      {
-        path: '/dashboard',
-        element: <ProtectedRoute><Dashboard /></ProtectedRoute>
-      },
-      {
-        path:'/edit-quiz/:id',
-        element:<Edit/>
-
-      },
-      {
-        path: '/result/:id',
-        element: <ProtectedRoute><Resultpage /></ProtectedRoute>
-      },
-      {
-        path: '/leaderboard/:id',
-        element: <ProtectedRoute><LeaderBoardPage /></ProtectedRoute>
-      },
-      {
-        path: '/explanation',
-        element: <ProtectedRoute><ExplanationPage /></ProtectedRoute>
-      },
-      {
-        path: '/create-quiz',
-        element: <ProtectedRoute><CreateQuizPage /></ProtectedRoute>
-      },
-      
-      {
-        path: '/history',
-        element: <ProtectedRoute><Historypage /></ProtectedRoute>
-
-      },
-      {
-        path: '/profile',
-        element: <ProtectedRoute><ProfilePage/></ProtectedRoute>
-
-      },
-      {
-        path: '/join-quiz',
-        element: <ProtectedRoute><JoinQuizPage/></ProtectedRoute>
-
-      },
-    ]
-  },
-  {
-    path: '/',
-    element: <HomePage />
-  },
-   {
-    path: "/login",
-    element: <Login />
-  },
-  {
-    path: '/register',
-    element: <Register />
-  },
-  {
-    path: '/attempt-quiz/:id',
-    element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute>
-  },
-])
+    future: {
+      v7_skipActionErrorRevalidation: true,
+    }
+  }
+)
 
 
 
