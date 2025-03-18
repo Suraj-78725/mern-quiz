@@ -11,6 +11,7 @@ import ExplanationPage from './pages/ExplanationPage'
 import CreateQuizPage from './pages/CreateQuizPage'
 import AttemptQuizPage from './pages/AttemptQuizPage'
 import Historypage from './pages/HistoryPage'
+import LeaderBoardPage from './pages/LeaderBoardPage'
 import "react-toastify/dist/ReactToastify.css"; 
 import { ToastContainer, toast } from 'react-toastify';
 import Edit from './pages/Edit'
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: '/result/:id',
         element: <ProtectedRoute><Resultpage /></ProtectedRoute>
+      },
+      {
+        path: '/leaderboard/:id',
+        element: <ProtectedRoute><LeaderBoardPage /></ProtectedRoute>
       },
       {
         path: '/explanation',

@@ -101,10 +101,13 @@ const Dashboard = () => {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {quizzes.map((quiz) => (
+            
             <div
               key={quiz._id}
               className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700 transition-all hover:shadow-md"
             >
+              
+              {console.log(quiz)}
               <div className="p-5">
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-1">{quiz.title}</h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2">
@@ -148,7 +151,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex gap-3">
                   <Link 
-                    to={`/view-quiz/${quiz._id}`} 
+                    to={`/leaderboard/${quiz._id}`} 
                     className="text-green-500 hover:text-green-700 transition-colors"
                     aria-label="View quiz"
                   >

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Award, BookOpen, CalendarClock, CheckCircle, XCircle, Loader2, AlertCircle } from 'lucide-react';
+import Leaderboard from "../components/Leaderboard";
 
 const ResultPage = () => {
   const { id } = useParams(); // Quiz ID from URL
@@ -172,6 +173,8 @@ const ResultPage = () => {
               View Explanations
             </button>
           </div>
+
+          <Leaderboard/>
 
           <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">

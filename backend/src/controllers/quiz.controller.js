@@ -174,60 +174,54 @@ const deleteQuiz = asyncHandler(async (req, res) => {
  */
 const getLeaderboard = asyncHandler(async (req, res) => {
     const leaderboard = await Quiz.aggregate([
-        { 
-            $match: {
-                _id: new mongoose.Types.ObjectId(String(req.params.quizId))
-            }
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(String(req.params.quizId)),
         },
-        {
-            $lookup: {
-                from: "attempts",
-                localField: "_id",
-                foreignField: "quizId",
-                as: "attempts"
-            }
+      },
+      {
+        $lookup: {
+          from: "attempts",
+          localField: "_id",
+          foreignField: "quizId",
+          as: "attempts",
         },
-        { $unwind: "$attempts" },
-        {
-            $lookup: {
-                from: "users",
-                localField: "attempts.userId",
-                foreignField: "_id",
-                as: "userDetails"
-            }
+      },
+      { $unwind: "$attempts" },
+      {
+        $lookup: {
+          from: "users",
+          localField: "attempts.userId",
+          foreignField: "_id",
+          as: "userDetails",
         },
-        { $unwind: "$userDetails" },
-        // Group by username to get latest attempt
-        {
-            $group: {
-                _id: "$userDetails.username",
-                username: { $first: "$userDetails.username" },
-                score: { $first: "$attempts.score" },
-                completedAt: { $first: "$attempts.completedAt" },
-                // Use this to sort within group
-                latestAttempt: { $max: "$attempts.completedAt" }
-            }
+      },
+      { $unwind: "$userDetails" },
+      
+      // Sort attempts by completedAt in descending order to get the latest attempt
+      { $sort: { "attempts.completedAt": -1 } },
+  
+      // Group by username to pick the latest attempt
+      {
+        $group: {
+          _id: "$userDetails.username",
+          username: { $first: "$userDetails.username" },
+          score: { $first: "$attempts.score" },
+          completedAt: { $first: "$attempts.completedAt" },
         },
-        // Sort by score (highest first)
-        { $sort: { score: -1, latestAttempt: -1 } },
-        // Remove the temporary latestAttempt field
-        {
-            $project: {
-                username: 1,
-                score: 1,
-                completedAt: 1
-            }
-        }
+      },
+  
+      // Sort by score in descending order
+      { $sort: { score: -1 } },
     ]);
-
+  
     if (leaderboard.length === 0) {
-        throw new ApiError(404, "No attempts found for this quiz");
+      throw new ApiError(404, "No attempts found for this quiz");
     }
-
-    return res
-        .status(200)
-        .json(new ApiResponse(200, leaderboard, "Leaderboard fetched successfully"));
-});
+  
+    return res.status(200).json(new ApiResponse(200, leaderboard, "Leaderboard fetched successfully"));
+  });
+  
 
 
 const attemptQuiz = asyncHandler(async (req, res) => {
