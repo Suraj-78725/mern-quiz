@@ -26,32 +26,38 @@ const ResultPage = () => {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
-
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error: ${response.status} - ${errorText}`);
+      }
+  
       const data = await response.json();
-      if (data.success) {
-        // Filter only attempts related to the current quiz
-        const quizAttempts = data.data.filter((attempt) => attempt.quizId._id === id);
-
+      // console.log(data);
+  
+      if (data.success && Array.isArray(data.data)) {
+        const quizAttempts = data.data.filter((attempt) => attempt.quizId?._id === id);
+        // console.log("Hello", quizAttempts);
+  
         if (quizAttempts.length > 0) {
           setAttempts(quizAttempts);
-
-          // The first attempt in the response is always the latest one
+  
           const latestAttempt = quizAttempts[0];
-
           if (latestAttempt.quizId?.title) {
             setQuizTitle(latestAttempt.quizId.title);
           }
-
-          // Fetch the quiz details to calculate max possible score
+  
           fetchQuizDetails(id, latestAttempt);
         }
       } else {
-        toast.error("Failed to fetch attempts.");
+        toast.error(data.message || "Failed to fetch attempts.");
       }
     } catch (error) {
-      toast.error("An error occurred while fetching attempts.");
+      console.error(error);
+      toast.error(`An error occurred: ${error.message}`);
     }
   };
+  
 
   const fetchQuizDetails = async (quizId, latestAttempt) => {
     try {
@@ -166,7 +172,7 @@ const ResultPage = () => {
 
           <div className="bg-gray-50 dark:bg-gray-700/50 px-6 py-4 flex justify-start">
             <button
-              onClick={() => navigate("/explanation", { state: { questions } })}
+              onClick={() => navigate(`/explanation/${id}`)}
               className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
             >
               <BookOpen className="h-4 w-4" />

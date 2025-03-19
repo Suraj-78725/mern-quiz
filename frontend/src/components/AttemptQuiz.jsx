@@ -55,8 +55,10 @@ const AttemptQuiz = () => {
   }
 
   const handleOptionSelect = (questionId, optionIndex) => {
-    setSelectedAnswers({ ...selectedAnswers, [questionId]: optionIndex })
-    setQuestionStatus({ ...questionStatus, [questionId]: "attempted" })
+    const updatedAnswers = { ...selectedAnswers, [questionId]: optionIndex };
+    setSelectedAnswers(updatedAnswers);
+    setQuestionStatus({ ...questionStatus, [questionId]: "attempted" });
+    localStorage.setItem(`userSelections_${id}`, JSON.stringify(updatedAnswers));
   }
 
   const handleSubmit = async () => {

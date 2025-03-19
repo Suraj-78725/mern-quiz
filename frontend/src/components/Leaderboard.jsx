@@ -13,6 +13,8 @@ const Leaderboard = () => {
     fetchLeaderboard();
   }, []);
 
+  // console.log(id);
+  
   const fetchLeaderboard = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}/leaderboard`, {

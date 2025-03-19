@@ -41,7 +41,7 @@ const router = createBrowserRouter(
           element: <ProtectedRoute><LeaderBoardPage /></ProtectedRoute>
         },
         {
-          path: '/explanation',
+          path: '/explanation/:id',
           element: <ProtectedRoute><ExplanationPage /></ProtectedRoute>
         },
         {
@@ -79,11 +79,11 @@ const router = createBrowserRouter(
       element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute>
     },
   ],
-  {
-    future: {
-      v7_skipActionErrorRevalidation: true,
-    }
-  }
+  // {
+  //   future: {
+  //     v7_skipActionErrorRevalidation: true,
+  //   }
+  // }
 )
 
 
