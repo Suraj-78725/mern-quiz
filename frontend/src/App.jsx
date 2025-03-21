@@ -17,7 +17,8 @@ import Edit from './pages/Edit';
 import ProfilePage from './pages/ProfilePage';
 import JoinQuizPage from './pages/JoinQuizPage';
 import HomePage from './pages/HomePage';
-import jwtDecode from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode';
+
 
 const router = createBrowserRouter([
   {
