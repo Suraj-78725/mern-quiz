@@ -34,23 +34,22 @@ const Navbar = () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/logout`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      })
+        credentials: "include", // Ensure cookies are sent
+      });
 
       if (response.ok) {
-        localStorage.removeItem("accessToken")
-        toast.success("Logged out successfully!")
-        navigate("/login")
+        localStorage.removeItem("accessToken"); // Optional, depending on your token storage strategy
+        toast.success("Logged out successfully!");
+        navigate("/login");
       } else {
-        toast.error("Logout failed!")
+        const data = await response.json();
+        toast.error(data.message || "Logout failed!");
       }
     } catch (error) {
-      toast.error("An error occurred while logging out.")
+      toast.error("An error occurred while logging out.");
     }
-  }
+  };
+
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
@@ -68,10 +67,9 @@ const Navbar = () => {
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
-                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -80,10 +78,9 @@ const Navbar = () => {
             <NavLink
               to="/create-quiz"
               className={({ isActive }) =>
-                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -92,10 +89,9 @@ const Navbar = () => {
             <NavLink
               to="/history"
               className={({ isActive }) =>
-                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -104,10 +100,9 @@ const Navbar = () => {
             <NavLink
               to="/join-quiz"
               className={({ isActive }) =>
-                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -194,10 +189,9 @@ const Navbar = () => {
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -206,10 +200,9 @@ const Navbar = () => {
             <NavLink
               to="/create-quiz"
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -218,10 +211,9 @@ const Navbar = () => {
             <NavLink
               to="/history"
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -230,10 +222,9 @@ const Navbar = () => {
             <NavLink
               to="/join-quiz"
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
@@ -242,10 +233,9 @@ const Navbar = () => {
             <NavLink
               to="/profile"
               className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-                  isActive
-                    ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                `block px-3 py-2 rounded-md text-base font-medium transition-colors ${isActive
+                  ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400"
+                  : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`
               }
             >
