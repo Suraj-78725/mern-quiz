@@ -17,6 +17,7 @@ import Edit from './pages/Edit';
 import ProfilePage from './pages/ProfilePage';
 import JoinQuizPage from './pages/JoinQuizPage';
 import HomePage from './pages/HomePage';
+import AiQuizPage from './pages/AiQuizPage';
 import { jwtDecode } from 'jwt-decode';
 
 
@@ -25,14 +26,15 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { path: '/dashboard', element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
-      { path:'/edit-quiz/:id', element:<Edit/> },
+      { path: '/edit-quiz/:id', element: <Edit /> },
       { path: '/result/:id', element: <ProtectedRoute><Resultpage /></ProtectedRoute> },
       { path: '/leaderboard/:id', element: <ProtectedRoute><LeaderBoardPage /></ProtectedRoute> },
       { path: '/explanation/:id', element: <ProtectedRoute><ExplanationPage /></ProtectedRoute> },
       { path: '/create-quiz', element: <ProtectedRoute><CreateQuizPage /></ProtectedRoute> },
       { path: '/history', element: <ProtectedRoute><Historypage /></ProtectedRoute> },
-      { path: '/profile', element: <ProtectedRoute><ProfilePage/></ProtectedRoute> },
-      { path: '/join-quiz', element: <ProtectedRoute><JoinQuizPage/></ProtectedRoute> },
+      { path: '/profile', element: <ProtectedRoute><ProfilePage /></ProtectedRoute> },
+      { path: '/join-quiz', element: <ProtectedRoute><JoinQuizPage /></ProtectedRoute> },
+      { path: '/ai-quiz', element: <ProtectedRoute><AiQuizPage /></ProtectedRoute> },
     ]
   },
   { path: '/', element: <HomePage /> },
