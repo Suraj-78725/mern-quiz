@@ -1,15 +1,16 @@
 import express from "express";
-import { 
-    createQuiz, 
-    getUserQuizzes, 
-    getQuizById, 
-    updateQuiz, 
-    deleteQuiz, 
-    getLeaderboard,
-    attemptQuiz,
-    getAttempts,
-    getQuizResults,
-    editQuizById
+import {
+  createQuiz,
+  getUserQuizzes,
+  getQuizById,
+  updateQuiz,
+  deleteQuiz,
+  getLeaderboard,
+  attemptQuiz,
+  getAttempts,
+  getQuizResults,
+  editQuizById,
+  generateQuiz,
 } from "../controllers/quiz.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -21,8 +22,9 @@ router.get("/user/attempts", verifyJWT, getAttempts);
 
 // Quiz routes
 router.post("/create", verifyJWT, upload.any(), createQuiz);
-  
+
 router.get("/my-quizzes", verifyJWT, getUserQuizzes);
+router.post("/generate-quiz", verifyJWT, generateQuiz);
 
 // Routes with parameters
 router.get("/:quizId", verifyJWT, getQuizById);
