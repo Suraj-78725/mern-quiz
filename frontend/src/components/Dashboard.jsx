@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Pencil, Trash, Eye, Share2, Plus, Loader2, AlertCircle, Clipboard } from 'lucide-react';
+import { FileText, Sparkles, Pencil, Trash, Eye, Share2, Plus, Loader2, AlertCircle, Clipboard } from 'lucide-react';
 import { toast } from "react-toastify";
 
 const Dashboard = () => {
@@ -64,13 +64,32 @@ const Dashboard = () => {
     toast.success("Quiz ID copied to clipboard!");
   };
 
+
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+        <div className="relative w-24 h-24 flex items-center justify-center">
+          {/* Background Spinning Glow Circle */}
+          <div className="absolute w-full h-full rounded-full border-4 border-blue-300 animate-spin-slow blur-sm opacity-60"></div>
+
+          {/* Center Icon - Paper */}
+          <div className="absolute flex items-center justify-center bg-white dark:bg-gray-800 p-4 rounded-full shadow-md z-10">
+            <FileText className="h-10 w-10 text-blue-600" />
+          </div>
+
+          {/* Top Sparkle */}
+          <div className="absolute -top-3 -right-3 animate-bounce">
+            <Sparkles className="h-6 w-6 text-yellow-400" />
+          </div>
+
+          {/* Spinning Outline */}
+          <div className="absolute inset-0 border-4 border-dashed border-blue-500 rounded-full animate-spin-slower"></div>
+        </div>
       </div>
     );
   }
+
 
   return (
     <div className="max-w-6xl mx-auto">
