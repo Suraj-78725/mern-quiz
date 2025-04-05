@@ -38,7 +38,7 @@ const Navbar = () => {
       });
 
       if (response.ok) {
-        localStorage.removeItem("accessToken"); // Optional, depending on your token storage strategy
+        // localStorage.removeItem("accessToken"); // Optional, depending on your token storage strategy
         toast.success("Logged out successfully!");
         navigate("/login");
       } else {
