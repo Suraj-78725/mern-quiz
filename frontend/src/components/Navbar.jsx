@@ -58,7 +58,7 @@ const Navbar = () => {
           {/* Logo */}
           <div className="flex items-center">
             <NavLink to="/" className="flex items-center">
-              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">QuizMaster</span>
+              <span className="text-xl font-bold text-blue-600 dark:text-blue-400">Edu Test Portal</span>
             </NavLink>
           </div>
 

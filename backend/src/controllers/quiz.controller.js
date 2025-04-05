@@ -112,7 +112,6 @@ const getUserQuizzes = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, quizzes, "Quizzes fetched successfully"));
 });
-
 // Get a single quiz by ID
 const getQuizById = asyncHandler(async (req, res) => {
   const { quizId } = req.params;

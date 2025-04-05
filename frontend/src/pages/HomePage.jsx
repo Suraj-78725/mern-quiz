@@ -255,9 +255,8 @@ const HomePage = () => {
     <div className="min-h-screen">
       {/* Navbar */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? "bg-white/90 text-black " : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 text-black " : "bg-transparent"
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -265,7 +264,7 @@ const HomePage = () => {
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
                 <span className={`text-xl font-bold ${scrolled ? "text-blue-600 dark:text-blue-400" : "text-white"}`}>
-                  QuizMaster
+                  Edu Test Portal
                 </span>
               </Link>
             </div>
@@ -274,41 +273,37 @@ const HomePage = () => {
             <div className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
-                className={`text-sm font-medium transition-colors ${
-                  scrolled
+                className={`text-sm font-medium transition-colors ${scrolled
                     ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
                     : "text-white/80 hover:text-white"
-                }`}
+                  }`}
               >
                 Features
               </a>
               <a
                 href="#how-it-works"
-                className={`text-sm font-medium transition-colors ${
-                  scrolled
+                className={`text-sm font-medium transition-colors ${scrolled
                     ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
                     : "text-white/80 hover:text-white"
-                }`}
+                  }`}
               >
                 How It Works
               </a>
               <a
                 href="#testimonials"
-                className={`text-sm font-medium transition-colors ${
-                  scrolled
+                className={`text-sm font-medium transition-colors ${scrolled
                     ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
                     : "text-white/80 hover:text-white"
-                }`}
+                  }`}
               >
                 Testimonials
               </a>
               <a
                 href="#faq"
-                className={`text-sm font-medium transition-colors ${
-                  scrolled
+                className={`text-sm font-medium transition-colors ${scrolled
                     ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
                     : "text-white/80 hover:text-white"
-                }`}
+                  }`}
               >
                 FAQ
               </a>
@@ -319,11 +314,10 @@ const HomePage = () => {
               {isLoggedIn ? (
                 <Link
                   to="/dashboard"
-                  className={`px-4 py-2 rounded-lg transition-colors ${
-                    scrolled
+                  className={`px-4 py-2 rounded-lg transition-colors ${scrolled
                       ? "text-black hover:bg-blue-700"
                       : "bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/30"
-                  }`}
+                    }`}
                 >
                   Dashboard
                 </Link>
@@ -331,22 +325,20 @@ const HomePage = () => {
                 <>
                   <Link
                     to="/login"
-                    className={`inline-flex items-center px-4 py-2 rounded-lg transition-colors ${
-                      scrolled
+                    className={`inline-flex items-center px-4 py-2 rounded-lg transition-colors ${scrolled
                         ? "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
                         : "text-white/90 hover:text-white"
-                    }`}
+                      }`}
                   >
                     <LogIn className="h-4 w-4 mr-2" />
                     Sign In
                   </Link>
                   <Link
                     to="/register"
-                    className={`px-4 py-2 rounded-lg transition-colors ${
-                      scrolled
+                    className={`px-4 py-2 rounded-lg transition-colors ${scrolled
                         ? "bg-blue-600 hover:bg-blue-700 text-white"
                         : "bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/30"
-                    }`}
+                      }`}
                   >
                     <span className="flex items-center">
                       <UserPlus className="h-4 w-4 mr-2" />
@@ -534,19 +526,17 @@ const HomePage = () => {
                       {featuredQuestions[activeQuestion].options.map((option, index) => (
                         <div
                           key={index}
-                          className={`p-4 rounded-lg border transition-all ${
-                            index === featuredQuestions[activeQuestion].correctIndex
+                          className={`p-4 rounded-lg border transition-all ${index === featuredQuestions[activeQuestion].correctIndex
                               ? "border-green-400/30 bg-green-400/10"
                               : "border-white/20 hover:border-white/40"
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center">
                             <div
-                              className={`flex items-center justify-center h-6 w-6 rounded-full border mr-3 ${
-                                index === featuredQuestions[activeQuestion].correctIndex
+                              className={`flex items-center justify-center h-6 w-6 rounded-full border mr-3 ${index === featuredQuestions[activeQuestion].correctIndex
                                   ? "border-green-400 bg-green-400 text-white"
                                   : "border-white/50"
-                              }`}
+                                }`}
                             >
                               {index === featuredQuestions[activeQuestion].correctIndex ? (
                                 <CheckCircle className="h-4 w-4" />
@@ -782,9 +772,8 @@ const HomePage = () => {
                 >
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{faq.question}</h3>
                   <ChevronDown
-                    className={`h-5 w-5 text-gray-500 transition-transform duration-300 ${
-                      activeFaq === index ? "transform rotate-180" : ""
-                    }`}
+                    className={`h-5 w-5 text-gray-500 transition-transform duration-300 ${activeFaq === index ? "transform rotate-180" : ""
+                      }`}
                   />
                 </button>
 

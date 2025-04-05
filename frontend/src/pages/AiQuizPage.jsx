@@ -1,5 +1,15 @@
 import { useState } from "react";
-import { Loader2, AlertCircle, FileText, Info, List, Hash, Sparkles, CheckCircle, LayoutGrid } from "lucide-react";
+import {
+    Loader2,
+    AlertCircle,
+    FileText,
+    Info,
+    List,
+    Hash,
+    Sparkles,
+    CheckCircle,
+    LayoutGrid,
+} from "lucide-react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -10,8 +20,10 @@ const AIQuizPage = () => {
         difficulty: "easy",
         numQuestions: 5,
     });
+
     const [loading, setLoading] = useState(false);
     const [quizGenerated, setQuizGenerated] = useState(false);
+    const [accessDenied, setAccessDenied] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -22,24 +34,30 @@ const AIQuizPage = () => {
         e.preventDefault();
         setLoading(true);
         setQuizGenerated(false);
+        setAccessDenied(false);
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/generate-quiz`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-                },
-                body: JSON.stringify(formData),
-            });
+            const response = await fetch(
+                `${import.meta.env.VITE_BACKEND_URL}/quizzes/generate-quiz`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                    body: JSON.stringify(formData),
+                }
+            );
 
             const data = await response.json();
 
             if (response.ok) {
-                toast.success("Quiz generated successfully!");
+                toast.success("Test generated successfully!");
                 setQuizGenerated(true);
+            } else if (response.status === 403) {
+                setAccessDenied(true);
             } else {
-                toast.error(data.message || "Failed to generate quiz.");
+                toast.error(data.message || "Failed to generate Test."); // 👈 Show toast only for other errors
             }
         } catch (error) {
             toast.error("An error occurred. Please try again.");
@@ -47,6 +65,7 @@ const AIQuizPage = () => {
             setLoading(false);
         }
     };
+
 
     const handleNavigateToDashboard = () => {
         navigate("/dashboard");
@@ -60,12 +79,14 @@ const AIQuizPage = () => {
                 Generate AI Quiz
             </h1>
 
-            {/* Success Message */}
+            {/* Conditional Rendering */}
             {quizGenerated ? (
                 <div className="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 p-6 rounded-lg flex flex-col items-center">
                     <CheckCircle className="h-12 w-12 mb-4" />
-                    <h2 className="text-xl font-bold">Quiz Generated Successfully!</h2>
-                    <p className="text-gray-600 dark:text-gray-400 mb-4">You can view and manage your quiz from the dashboard.</p>
+                    <h2 className="text-xl font-bold">Test Generated Successfully!</h2>
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                        You can view and manage your quiz from the dashboard.
+                    </p>
                     <button
                         onClick={handleNavigateToDashboard}
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
@@ -74,8 +95,28 @@ const AIQuizPage = () => {
                         Go to Dashboard
                     </button>
                 </div>
+            ) : accessDenied ? (
+                <div className="bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 p-6 rounded-lg flex flex-col items-center">
+                    <AlertCircle className="h-12 w-12 mb-4" />
+                    <h2 className="text-xl font-bold">Access Denied</h2>
+                    <p className="text-gray-600 dark:text-gray-400 text-center max-w-md">
+                        This feature is not yet activated for your account.
+                        <br />
+                        Please contact{" "}
+                        <a
+                            href="mailto:vighnupawar2004@gmail.com"
+                            className="text-blue-600 underline"
+                        >
+                            vighnupawar2004@gmail.com
+                        </a>{" "}
+                        to request access.
+                    </p>
+                </div>
             ) : (
-                <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md space-y-6">
+                <form
+                    onSubmit={handleSubmit}
+                    className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md space-y-6"
+                >
                     {/* Title Input */}
                     <div>
                         <label className="block text-gray-700 dark:text-gray-300 font-medium mb-2">
@@ -152,7 +193,11 @@ const AIQuizPage = () => {
                         disabled={loading}
                         className="w-full p-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
                     >
-                        {loading ? <Loader2 className="h-5 w-5 animate-spin inline-block" /> : "Generate Quiz"}
+                        {loading ? (
+                            <Loader2 className="h-5 w-5 animate-spin inline-block" />
+                        ) : (
+                            "Generate Quiz"
+                        )}
                     </button>
                 </form>
             )}

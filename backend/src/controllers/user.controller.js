@@ -20,7 +20,6 @@ const generateTokens = async userId => {
     throw new ApiError(500, "Error generating tokens");
   }
 };
-
 // User registration
 const registerUser = asyncHandler(async (req, res) => {
   const { fullName, email, username, password } = req.body;
@@ -54,7 +53,6 @@ const registerUser = asyncHandler(async (req, res) => {
     .status(201)
     .json(new ApiResponse(200, registeredUser, "User registered successfully"));
 });
-
 // User login
 const loginUser = asyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
@@ -98,7 +96,6 @@ const loginUser = asyncHandler(async (req, res) => {
       )
     );
 });
-
 // User logout
 const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
@@ -120,7 +117,6 @@ const logoutUser = asyncHandler(async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User logged out"));
 });
-
 // Refresh access token
 const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
@@ -168,7 +164,6 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     throw new ApiError(401, error?.message || "Invalid refresh token");
   }
 });
-
 // Change password
 const changePassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
@@ -185,7 +180,6 @@ const changePassword = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, {}, "Password changed successfully"));
 });
-
 // Fetch current user data
 const getCurrentUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id).select(
