@@ -5,6 +5,9 @@ import { User } from "../models/user.model.js";
 
 // if res not used then use it as _
 export const verifyJWT = asyncHandler(async (req, _, next) => {
+  // console.log(req.header("Authorization")?.replace("Bearer ", ""));
+  // console.log(req.cookies?.accessToken);
+
   try {
     const token =
       req.cookies?.accessToken ||

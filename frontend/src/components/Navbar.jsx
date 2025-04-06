@@ -32,10 +32,16 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     const accessToken = localStorage.getItem("accessToken");
+    // console.log(accessToken);
+
     try {
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/logout`, {
         method: "POST",
-        Authorization: `Bearer ${accessToken}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json", // optional, depends on backend
+        },
         credentials: "include", // Ensure cookies are sent
       });
 
