@@ -43,59 +43,9 @@ const router = createBrowserRouter([
   { path: '/attempt-quiz/:id', element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute> },
 ]);
 
-// ✅ Refresh Token Function
-const refreshAccessToken = async () => {
-  try {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/refresh-token`, {
-      method: 'POST',
-      credentials: 'include',
-    });
 
-    if (!response.ok) {
-      console.error('Failed to refresh token');
-      throw new Error('Session expired. Please log in again.');
-    }
-
-    const data = await response.json();
-    localStorage.setItem('accessToken', data.data.accessToken);
-    console.log('Access token refreshed!');
-  } catch (error) {
-    console.error(error.message);
-    toast.error(error.message);
-    localStorage.removeItem('accessToken');
-    window.location.href = '/login';
-  }
-};
-
-// ✅ Check Token Expiry
-const isTokenExpiredOrExpiringSoon = (token) => {
-  try {
-    const decodedToken = jwtDecode(token);
-    const currentTime = Math.floor(Date.now() / 1000);
-    const timeLeft = decodedToken.exp - currentTime;
-
-    // If token expires in less than 5 minutes, consider it "expiring soon"
-    return timeLeft <= 300; // 300 seconds = 5 minutes
-  } catch (error) {
-    return true; // If token is invalid, consider it expired
-  }
-};
 
 const App = () => {
-  useEffect(() => {
-    // ✅ Token Refresh Logic Every 15 Minutes
-    const interval = setInterval(() => {
-      const accessToken = localStorage.getItem('accessToken');
-
-      if (accessToken && isTokenExpiredOrExpiringSoon(accessToken)) {
-        console.log('Access token is expired or expiring soon. Attempting to refresh...');
-        refreshAccessToken();
-      }
-    }, 15 * 60 * 1000); // Every 15 Minutes
-
-    return () => clearInterval(interval); // Clean Up
-  }, []);
-
   return (
     <>
       <RouterProvider router={router} />

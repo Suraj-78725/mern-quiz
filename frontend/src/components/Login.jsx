@@ -45,6 +45,7 @@ const Login = () => {
       const result = await response.json();
 
       if (response.ok) {
+
         localStorage.setItem("accessToken", result.data.accessToken);
         toast.success("Logged in successfully!");
 

@@ -31,14 +31,19 @@ const Navbar = () => {
   }, [isProfileOpen])
 
   const handleLogout = async () => {
+    const accessToken = localStorage.getItem("accessToken");
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/logout`, {
         method: "POST",
+        Authorization: `Bearer ${accessToken}`,
         credentials: "include", // Ensure cookies are sent
       });
 
+
+
+
       if (response.ok) {
-        // localStorage.removeItem("accessToken"); // Optional, depending on your token storage strategy
+        localStorage.removeItem("accessToken"); // Optional, depending on your token storage strategy
         toast.success("Logged out successfully!");
         navigate("/login");
       } else {
