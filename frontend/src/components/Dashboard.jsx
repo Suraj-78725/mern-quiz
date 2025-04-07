@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FileText, Sparkles, Pencil, Trash, Eye, Share2, Plus, Loader2, AlertCircle, Clipboard } from 'lucide-react';
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchQuizzes();
@@ -24,7 +26,9 @@ const Dashboard = () => {
         setQuizzes(data.data);
       }
     } catch (error) {
-      toast.error("An error occurred while fetching quizzes.");
+      localStorage.removeItem('accessToken')
+      navigate("/login");
+      toast.error("An error occurred while fetching quizzes.Login again");
     } finally {
       setLoading(false);
     }
