@@ -57,6 +57,8 @@ const Navbar = () => {
         toast.error(data.message || "Logout failed!");
       }
     } catch (error) {
+      localStorage.removeItem("accessToken");
+      navigate("/login");
       toast.error("An error occurred while logging out.");
     }
   };
