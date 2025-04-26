@@ -11,6 +11,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchQuizzes();
+
+    // Check if userSelections keys exist and remove them
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith("userSelections_")) {
+        localStorage.removeItem(key)
+      }
+    })
+
   }, []);
 
   const fetchQuizzes = async () => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Trophy, UserCircle2, Loader2 } from "lucide-react";
+import { ArrowLeft, Trophy, UserCircle2, Loader2, Crown } from "lucide-react";
 import { toast } from "react-toastify";
 
 const Leaderboard = () => {
@@ -11,12 +11,11 @@ const Leaderboard = () => {
 
   useEffect(() => {
     fetchLeaderboard();
-  }, []);
+  }, [id]);
 
-  // console.log(id);
-  
   const fetchLeaderboard = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}/leaderboard`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
@@ -54,13 +53,13 @@ const Leaderboard = () => {
           <ArrowLeft className="h-5 w-5 mr-2" />
           Back to Dashboard
         </button>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Leaderboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Leaderboard - Highest Scores</h1>
       </div>
 
       {/* Leaderboard Section */}
       <div className="bg-white dark:bg-gray-800 shadow-lg rounded-xl overflow-hidden">
         <div className="p-4 bg-gray-100 dark:bg-gray-700">
-          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Top Scorers</h2>
+          <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">Top Performers</h2>
         </div>
 
         {leaderboard.length === 0 ? (
@@ -69,34 +68,52 @@ const Leaderboard = () => {
           <ul>
             {leaderboard.map((entry, index) => (
               <li
-                key={entry._id}
-                className={`p-4 flex items-center justify-between border-b dark:border-gray-700 ${
-                  index === 0 ? "bg-yellow-100 dark:bg-yellow-800" : "bg-white dark:bg-gray-800"
-                }`}
+                key={entry.userId || index}
+                className={`p-4 flex items-center justify-between border-b dark:border-gray-700 ${index === 0 ? "bg-yellow-100 dark:bg-yellow-800" :
+                  index === 1 ? "bg-gray-100 dark:bg-gray-700" :
+                    index === 2 ? "bg-amber-100 dark:bg-amber-800" :
+                      "bg-white dark:bg-gray-800"
+                  }`}
               >
                 {/* User Section */}
                 <div className="flex items-center gap-4">
-                  {index === 0 ? (
-                    <Trophy className="h-8 w-8 text-yellow-500" />
-                  ) : (
-                    <UserCircle2 className="h-8 w-8 text-gray-400 dark:text-gray-500" />
-                  )}
+                  <div className="relative">
+                    {index === 0 && <Crown className="absolute -top-4 -left-4 h-5 w-5 text-yellow-500" />}
+                    {index < 3 ? (
+                      <Trophy className={`h-8 w-8 ${index === 0 ? "text-yellow-500" :
+                        index === 1 ? "text-gray-500" :
+                          "text-amber-500"
+                        }`} />
+                    ) : (
+                      <UserCircle2 className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+                    )}
+                  </div>
                   <div>
                     <p className="text-lg font-medium text-gray-800 dark:text-white">{entry.username}</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Completed on {new Date(entry.completedAt).toLocaleDateString()}
-                    </p>
+                    <div className="flex gap-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {entry.attempts} attempt{entry.attempts !== 1 ? 's' : ''}
+                      </p>
+                      <span className="text-gray-400">•</span>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {new Date(entry.completedAt).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 {/* Score Section */}
-                <span
-                  className={`text-lg font-semibold ${
-                    index === 0 ? "text-yellow-600 dark:text-yellow-400" : "text-blue-600 dark:text-blue-400"
-                  }`}
-                >
-                  {entry.score} Pts
-                </span>
+                <div className="text-right">
+                  <span
+                    className={`text-lg font-semibold ${index === 0 ? "text-yellow-600 dark:text-yellow-400" :
+                      index === 1 ? "text-gray-600 dark:text-gray-400" :
+                        index === 2 ? "text-amber-600 dark:text-amber-400" :
+                          "text-blue-600 dark:text-blue-400"
+                      }`}
+                  >
+                    {entry.highestScore} Pts
+                  </span>
+                </div>
               </li>
             ))}
           </ul>

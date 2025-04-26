@@ -1,6 +1,9 @@
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-const allowedEmails = ["vighnupawar2004@gmail.com"];
+const allowedEmails = [
+  "vighnupawar2004@gmail.com",
+  "support@vighnesh.is-a.dev",
+];
 
 export const checkAllowedEmail = (req, res, next) => {
   const userEmail = req.user.email;

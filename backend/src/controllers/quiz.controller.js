@@ -6,8 +6,11 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import fs from "fs";
 
 const createQuiz = asyncHandler(async (req, res) => {
+  console.log("I am in");
+
   const { title, description, timeLimit } = req.body;
 
   if (!title) throw new ApiError(400, "Title is required");
@@ -32,7 +35,7 @@ const createQuiz = asyncHandler(async (req, res) => {
   const groupedExplanationImages = {};
 
   files.forEach(file => {
-    const [fieldType, index] = file.fieldname.split("_"); // Split fieldname into type and index
+    const [fieldType, index] = file.fieldname.split("_");
 
     if (fieldType === "questionImage") {
       if (!groupedQuestionImages[index]) groupedQuestionImages[index] = [];
@@ -52,14 +55,22 @@ const createQuiz = asyncHandler(async (req, res) => {
     // Upload multiple question images
     if (groupedQuestionImages[i]) {
       for (let img of groupedQuestionImages[i]) {
-        // console.log(img.path);
+        try {
+          // Check if file exists before uploading
+          if (!fs.existsSync(img.path)) {
+            console.error(`File not found: ${img.path}`);
+            continue;
+          }
 
-        const uploadedImg = await uploadOnCloudinary(img.path);
+          const uploadedImg = await uploadOnCloudinary(img.path);
+          if (uploadedImg?.secure_url) {
+            questions[i].questionImages.push(uploadedImg.secure_url);
+          }
 
-        //   console.log(uploadedImg);
-
-        if (uploadedImg?.secure_url) {
-          questions[i].questionImages.push(uploadedImg.secure_url);
+          // Clean up the temp file after upload
+          fs.unlinkSync(img.path);
+        } catch (error) {
+          console.error(`Error uploading question image: ${error.message}`);
         }
       }
     }
@@ -67,16 +78,26 @@ const createQuiz = asyncHandler(async (req, res) => {
     // Upload multiple explanation images
     if (groupedExplanationImages[i]) {
       for (let img of groupedExplanationImages[i]) {
-        const uploadedImg = await uploadOnCloudinary(img.path);
-        if (uploadedImg?.secure_url) {
-          questions[i].explanationImages.push(uploadedImg.secure_url);
+        try {
+          // Check if file exists before uploading
+          if (!fs.existsSync(img.path)) {
+            console.error(`File not found: ${img.path}`);
+            continue;
+          }
+
+          const uploadedImg = await uploadOnCloudinary(img.path);
+          if (uploadedImg?.secure_url) {
+            questions[i].explanationImages.push(uploadedImg.secure_url);
+          }
+
+          // Clean up the temp file after upload
+          fs.unlinkSync(img.path);
+        } catch (error) {
+          console.error(`Error uploading explanation image: ${error.message}`);
         }
       }
     }
   }
-
-  // Log the updated questions array for debugging
-  // console.log("Updated questions:", questions);
 
   // Create the quiz
   const quiz = await Quiz.create({
@@ -211,21 +232,39 @@ const getLeaderboard = asyncHandler(async (req, res) => {
     },
     { $unwind: "$userDetails" },
 
-    // Sort attempts by completedAt in descending order to get the latest attempt
-    { $sort: { "attempts.completedAt": -1 } },
-
-    // Group by username to pick the latest attempt
+    // Group by user to find their highest score and count attempts
     {
       $group: {
-        _id: "$userDetails.username",
-        username: { $first: "$userDetails.username" },
-        score: { $first: "$attempts.score" },
-        completedAt: { $first: "$attempts.completedAt" },
+        _id: {
+          userId: "$attempts.userId",
+          username: "$userDetails.username",
+        },
+        highestScore: { $max: "$attempts.score" },
+        attempts: { $sum: 1 },
+        // Get the most recent attempt with the highest score
+        bestAttempt: {
+          $top: {
+            output: "$attempts",
+            sortBy: { score: -1, completedAt: -1 },
+          },
+        },
       },
     },
 
-    // Sort by score in descending order
-    { $sort: { score: -1 } },
+    // Project the fields we need
+    {
+      $project: {
+        _id: 0,
+        userId: "$_id.userId",
+        username: "$_id.username",
+        highestScore: 1,
+        attempts: 1,
+        completedAt: "$bestAttempt.completedAt",
+      },
+    },
+
+    // Sort by highest score in descending order
+    { $sort: { highestScore: -1 } },
   ]);
 
   if (leaderboard.length === 0) {
@@ -238,7 +277,6 @@ const getLeaderboard = asyncHandler(async (req, res) => {
       new ApiResponse(200, leaderboard, "Leaderboard fetched successfully")
     );
 });
-
 const attemptQuiz = asyncHandler(async (req, res) => {
   const { answers } = req.body;
   const { quizId } = req.params;
@@ -374,7 +412,7 @@ const generateQuiz = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  const prompt = `Create a JSON quiz with the following details:\n
+  const prompt = `Create a JSON quiz with the following details and time limit in minutes:\n
 Title: \"${title}\"\nDescription: \"${description}\"\nDifficulty: \"${difficulty}\"\nNumber of Questions: ${numQuestions}\n
 Return JSON only. Strict format:\n
 {

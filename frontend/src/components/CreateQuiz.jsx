@@ -2,12 +2,13 @@
 
 import { useState } from "react"
 import { toast } from "react-toastify"
-import { Plus, Trash2, Clock, CheckCircle, HelpCircle, BookOpen, Save, FileText, AlignLeft } from "lucide-react"
+import { Plus, Trash2, Clock, CheckCircle, HelpCircle, BookOpen, Save, FileText, AlignLeft, Loader2 } from "lucide-react"
 
 const CreateQuiz = () => {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
   const [timeLimit, setTimeLimit] = useState(30)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [questions, setQuestions] = useState([
     {
       questionText: "",
@@ -65,6 +66,7 @@ const CreateQuiz = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsSubmitting(true)
 
     const formData = new FormData()
     formData.append("title", title)
@@ -120,6 +122,8 @@ const CreateQuiz = () => {
       }
     } catch (error) {
       toast.error("An error occurred while creating the quiz")
+    } finally {
+      setIsSubmitting(false) // Stop loading
     }
   }
 
@@ -245,11 +249,10 @@ const CreateQuiz = () => {
                       <button
                         type="button"
                         onClick={() => handleQuestionChange(qIndex, "correctAnswerIndex", oIndex)}
-                        className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
-                          q.correctAnswerIndex === oIndex
-                            ? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400"
-                            : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
-                        }`}
+                        className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-colors ${q.correctAnswerIndex === oIndex
+                          ? "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400"
+                          : "text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
+                          }`}
                         aria-label={q.correctAnswerIndex === oIndex ? "Correct answer" : "Mark as correct answer"}
                       >
                         <CheckCircle className="w-5 h-5" />
@@ -320,10 +323,21 @@ const CreateQuiz = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className="flex items-center justify-center gap-2 w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-md transition-all mt-4"
+          disabled={isSubmitting}
+          className={`flex items-center justify-center gap-2 w-full ${isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+            } text-white font-semibold py-3 rounded-md transition-all mt-4`}
         >
-          <Save className="w-5 h-5" />
-          Create Quiz
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Creating Quiz...
+            </>
+          ) : (
+            <>
+              <Save className="w-5 h-5" />
+              Create Quiz
+            </>
+          )}
         </button>
       </form>
     </div>

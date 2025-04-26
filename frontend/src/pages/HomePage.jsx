@@ -196,7 +196,7 @@ const HomePage = () => {
       name: "Sarah Johnson",
       role: "High School Teacher",
       content:
-        "QuizMaster has transformed how I engage with my students. The platform is intuitive and the analytics help me understand where my students need more support.",
+        "Edu Test Portal  has transformed how I engage with my students. The platform is intuitive and the analytics help me understand where my students need more support.",
       avatar: "/placeholder.svg?height=80&width=80",
     },
     {
@@ -274,8 +274,8 @@ const HomePage = () => {
               <a
                 href="#features"
                 className={`text-sm font-medium transition-colors ${scrolled
-                    ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
-                    : "text-white/80 hover:text-white"
+                  ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
+                  : "text-white/80 hover:text-white"
                   }`}
               >
                 Features
@@ -283,26 +283,26 @@ const HomePage = () => {
               <a
                 href="#how-it-works"
                 className={`text-sm font-medium transition-colors ${scrolled
-                    ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
-                    : "text-white/80 hover:text-white"
+                  ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
+                  : "text-white/80 hover:text-white"
                   }`}
               >
                 How It Works
               </a>
-              <a
+              {/* <a
                 href="#testimonials"
                 className={`text-sm font-medium transition-colors ${scrolled
-                    ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
-                    : "text-white/80 hover:text-white"
+                  ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
+                  : "text-white/80 hover:text-white"
                   }`}
               >
                 Testimonials
-              </a>
+              </a> */}
               <a
                 href="#faq"
                 className={`text-sm font-medium transition-colors ${scrolled
-                    ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
-                    : "text-white/80 hover:text-white"
+                  ? "text-black hover:text-blue-600 dark:hover:text-blue-400"
+                  : "text-white/80 hover:text-white"
                   }`}
               >
                 FAQ
@@ -315,8 +315,8 @@ const HomePage = () => {
                 <Link
                   to="/dashboard"
                   className={`px-4 py-2 rounded-lg transition-colors ${scrolled
-                      ? "text-black hover:bg-blue-700"
-                      : "bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/30"
+                    ? "text-black hover:bg-blue-700"
+                    : "bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/30"
                     }`}
                 >
                   Dashboard
@@ -326,8 +326,8 @@ const HomePage = () => {
                   <Link
                     to="/login"
                     className={`inline-flex items-center px-4 py-2 rounded-lg transition-colors ${scrolled
-                        ? "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                        : "text-white/90 hover:text-white"
+                      ? "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                      : "text-white/90 hover:text-white"
                       }`}
                   >
                     <LogIn className="h-4 w-4 mr-2" />
@@ -336,8 +336,8 @@ const HomePage = () => {
                   <Link
                     to="/register"
                     className={`px-4 py-2 rounded-lg transition-colors ${scrolled
-                        ? "bg-blue-600 hover:bg-blue-700 text-white"
-                        : "bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/30"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white border border-white/30"
                       }`}
                   >
                     <span className="flex items-center">
@@ -495,7 +495,7 @@ const HomePage = () => {
                   ))}
                 </div>
                 <div className="ml-3 text-sm">
-                  <span className="font-semibold text-white">1,000+</span> users joined this month
+                  <span className="font-semibold text-white">10+</span> users joined this month
                 </div>
               </div>
             </div>
@@ -504,7 +504,7 @@ const HomePage = () => {
               className="relative animate-on-scroll opacity-0 transition-all duration-1000 translate-y-8"
               style={{ animationDelay: "0.4s" }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-500/30 rounded-3xl blur-3xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-500/30 rounded-3xl blur-3xl border-0"></div>
               <div className="relative bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 overflow-hidden transform transition-all duration-500 hover:scale-[1.02]">
                 <div className="p-6 bg-gradient-to-br from-white/10 to-white/5 border-b border-white/10">
                   <div className="flex items-center">
@@ -527,15 +527,15 @@ const HomePage = () => {
                         <div
                           key={index}
                           className={`p-4 rounded-lg border transition-all ${index === featuredQuestions[activeQuestion].correctIndex
-                              ? "border-green-400/30 bg-green-400/10"
-                              : "border-white/20 hover:border-white/40"
+                            ? "border-green-400/30 bg-green-400/10"
+                            : "border-white/20 hover:border-white/40"
                             }`}
                         >
                           <div className="flex items-center">
                             <div
                               className={`flex items-center justify-center h-6 w-6 rounded-full border mr-3 ${index === featuredQuestions[activeQuestion].correctIndex
-                                  ? "border-green-400 bg-green-400 text-white"
-                                  : "border-white/50"
+                                ? "border-green-400 bg-green-400 text-white"
+                                : "border-white/50"
                                 }`}
                             >
                               {index === featuredQuestions[activeQuestion].correctIndex ? (
@@ -586,7 +586,7 @@ const HomePage = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-slate-50 dark:bg-gray-900">
+      {/* <section className="py-12 bg-slate-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
@@ -606,7 +606,7 @@ const HomePage = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Features Section */}
       <section id="features" ref={featuresRef} className="py-20 bg-white dark:bg-gray-800">
@@ -646,7 +646,7 @@ const HomePage = () => {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 animate-on-scroll opacity-0 transition-all duration-700">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">How QuizMaster Works</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">How Edu Test Portal  Works</h2>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
               Create, share, and analyze quizzes in just a few simple steps.
             </p>
@@ -708,7 +708,7 @@ const HomePage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" ref={testimonialsRef} className="py-20 bg-white dark:bg-gray-800">
+      {/* <section id="testimonials" ref={testimonialsRef} className="py-20 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 animate-on-scroll opacity-0 transition-all duration-700">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">What Our Users Say</h2>
@@ -745,7 +745,7 @@ const HomePage = () => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* FAQ Section */}
       <section id="faq" ref={faqRef} className="py-20 bg-slate-50 dark:bg-gray-900">
@@ -755,7 +755,7 @@ const HomePage = () => {
               Frequently Asked Questions
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-400">
-              Find answers to common questions about QuizMaster.
+              Find answers to common questions about Edu Test Portal .
             </p>
           </div>
 
@@ -794,7 +794,7 @@ const HomePage = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Create Your First Quiz?</h2>
           <p className="text-lg text-white/80 mb-8 max-w-2xl mx-auto">
             Join thousands of educators, trainers, and quiz enthusiasts who are creating engaging quizzes with
-            QuizMaster.
+            Edu Test Portal .
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -832,7 +832,7 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">QuizMaster</h3>
+              <h3 className="text-xl font-bold mb-4">Edu Test Portal </h3>
               <p className="text-gray-400 mb-4">The ultimate platform for creating, sharing, and analyzing quizzes.</p>
               <div className="flex space-x-4">
                 <a href="#" className="text-gray-400 hover:text-white transition-colors duration-300">
@@ -941,7 +941,7 @@ const HomePage = () => {
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">© {new Date().getFullYear()} QuizMaster. All rights reserved.</p>
+            <p className="text-gray-400 text-sm">© {new Date().getFullYear()} Edu Test Portal . All rights reserved.</p>
             <div className="mt-4 md:mt-0">
               <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors duration-300 mr-4">
                 Privacy Policy
