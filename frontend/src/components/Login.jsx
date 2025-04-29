@@ -76,6 +76,7 @@ const Login = () => {
               <p className="text-gray-500 dark:text-gray-400 mt-2">Sign in to your account to continue</p>
             </div>
 
+
             {error && (
               <div className="mb-6 p-4 rounded-lg flex items-start gap-3 bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300">
                 <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" />

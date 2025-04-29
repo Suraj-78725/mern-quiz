@@ -17,6 +17,9 @@ const AttemptQuiz = () => {
   const [started, setStarted] = useState(false)
   const [questionStatus, setQuestionStatus] = useState({})
   const [showConfirmSubmit, setShowConfirmSubmit] = useState(false)
+  const [tabActive, setTabActive] = useState(true)
+  const [tabSwitchCount, setTabSwitchCount] = useState(0)
+
 
   useEffect(() => {
     fetchQuiz()
@@ -30,6 +33,88 @@ const AttemptQuiz = () => {
       handleSubmit()
     }
   }, [timeLeft, started])
+
+  // Tab switching detection
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        setTabActive(false)
+        setTabSwitchCount(prev => prev + 1)
+        toast.warning("Please don't switch tabs during the quiz!", {
+          autoClose: false,
+          closeOnClick: false
+        })
+      } else {
+        setTabActive(true)
+      }
+    }
+
+    if (started) {
+      document.addEventListener('visibilitychange', handleVisibilityChange)
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange)
+      }
+    }
+  }, [started])
+
+  // Fullscreen enforcement
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && started) {
+        toast.warning("Please return to fullscreen mode!", {
+          autoClose: false,
+          closeOnClick: false
+        })
+        document.documentElement.requestFullscreen().catch(() => {
+          toast.error("Fullscreen not allowed - quiz may be invalidated")
+        })
+      }
+    }
+
+    if (started) {
+      document.addEventListener('fullscreenchange', handleFullscreenChange)
+      return () => {
+        document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      }
+    }
+  }, [started])
+
+  // Copy/paste prevention
+  useEffect(() => {
+    if (!started) return
+
+    const handleCopyPaste = (e) => {
+      e.preventDefault()
+      toast.warning("Copy/paste is disabled during the quiz")
+      return false
+    }
+
+    document.addEventListener('copy', handleCopyPaste)
+    document.addEventListener('paste', handleCopyPaste)
+    document.addEventListener('cut', handleCopyPaste)
+
+    return () => {
+      document.removeEventListener('copy', handleCopyPaste)
+      document.removeEventListener('paste', handleCopyPaste)
+      document.removeEventListener('cut', handleCopyPaste)
+    }
+  }, [started])
+
+  // Right-click disable
+  useEffect(() => {
+    if (!started) return
+
+    const handleContextMenu = (e) => {
+      e.preventDefault()
+      toast.warning("Right-click is disabled during the quiz")
+      return false
+    }
+
+    document.addEventListener('contextmenu', handleContextMenu)
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu)
+    }
+  }, [started])
 
   const fetchQuiz = async () => {
     try {
@@ -51,7 +136,14 @@ const AttemptQuiz = () => {
   }
 
   const startQuiz = () => {
-    setStarted(true)
+    try {
+      document.documentElement.requestFullscreen().then(() => {
+        setStarted(true)
+      })
+    } catch (e) {
+      setStarted(true)
+      toast.warning("Fullscreen not supported - quiz will continue")
+    }
   }
 
   const handleOptionSelect = (questionId, optionIndex) => {
@@ -120,6 +212,14 @@ const AttemptQuiz = () => {
     const handleKeyDown = (e) => {
       if (!started) return
 
+      // Block developer tools shortcuts
+      if (e.ctrlKey && (e.key === 'Shift' || e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+        e.preventDefault()
+        toast.warning("Developer tools are disabled during the quiz")
+        return
+      }
+
+      // Allow only navigation keys
       if (e.key === "ArrowRight") {
         goToNextQuestion()
       } else if (e.key === "ArrowLeft") {
@@ -129,6 +229,8 @@ const AttemptQuiz = () => {
         if (index < quiz.questions.length) {
           navigateQuestion(index)
         }
+      } else if (!(e.key === 'Tab' || e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault()
       }
     }
 
@@ -202,25 +304,31 @@ const AttemptQuiz = () => {
                     <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-red-100 dark:bg-red-900/20 text-red-500 mr-2">
                       <AlertCircle className="h-4 w-4" />
                     </span>
-                    <span>No tab switching (You will be warned!)</span>
+                    <span>No tab switching allowed</span>
                   </li>
                   <li className="flex items-start">
                     <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-red-100 dark:bg-red-900/20 text-red-500 mr-2">
                       <AlertCircle className="h-4 w-4" />
                     </span>
-                    <span>No screenshots allowed</span>
+                    <span>Fullscreen mode required</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-red-100 dark:bg-red-900/20 text-red-500 mr-2">
+                      <AlertCircle className="h-4 w-4" />
+                    </span>
+                    <span>Copy/paste and right-click disabled</span>
                   </li>
                   <li className="flex items-start">
                     <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-amber-100 dark:bg-amber-900/20 text-amber-500 mr-2">
                       <Clock className="h-4 w-4" />
                     </span>
-                    <span>Quiz auto-submits on timeout</span>
+                    <span>Quiz auto-submits when time expires</span>
                   </li>
                   <li className="flex items-start">
                     <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-green-100 dark:bg-green-900/20 text-green-500 mr-2">
                       <CheckCircle className="h-4 w-4" />
                     </span>
-                    <span>Attempted questions will be highlighted in the navigation</span>
+                    <span>Attempted questions will be highlighted</span>
                   </li>
                 </ul>
               </div>
@@ -270,7 +378,7 @@ const AttemptQuiz = () => {
           </div>
 
           <div className="flex flex-col md:flex-row flex-1 max-w-7xl mx-auto w-full p-4 gap-4">
-            {/* Question Navigation Panel - Sidebar on desktop, bottom bar on mobile */}
+            {/* Question Navigation Panel */}
             <div className="md:w-1/4 order-2 md:order-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 md:sticky md:top-20 md:h-fit">
               <h3 className="text-lg font-semibold mb-3">Questions</h3>
 
@@ -281,12 +389,11 @@ const AttemptQuiz = () => {
                     onClick={() => navigateQuestion(index)}
                     className={`
                       relative p-3 rounded-lg font-medium transition-all duration-200
-                      ${
-                        currentQuestionIndex === index
-                          ? "bg-blue-500 text-white"
-                          : questionStatus[question._id]
-                            ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
-                            : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      ${currentQuestionIndex === index
+                        ? "bg-blue-500 text-white"
+                        : questionStatus[question._id]
+                          ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800"
+                          : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
                       }
                     `}
                     aria-label={`Question ${index + 1}`}
@@ -357,10 +464,9 @@ const AttemptQuiz = () => {
                     className={`
                       relative rounded-lg border border-gray-200 dark:border-gray-700 p-4 cursor-pointer
                       transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-700
-                      ${
-                        selectedAnswers[currentQuestion._id] === index
-                          ? "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700"
-                          : "bg-white dark:bg-gray-800"
+                      ${selectedAnswers[currentQuestion._id] === index
+                        ? "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-700"
+                        : "bg-white dark:bg-gray-800"
                       }
                     `}
                   >
@@ -368,11 +474,10 @@ const AttemptQuiz = () => {
                       <div
                         className={`
                         flex items-center justify-center h-6 w-6 rounded-full border mr-3
-                        ${
-                          selectedAnswers[currentQuestion._id] === index
+                        ${selectedAnswers[currentQuestion._id] === index
                             ? "border-blue-500 bg-blue-500 text-white"
                             : "border-gray-300 dark:border-gray-600"
-                        }
+                          }
                       `}
                       >
                         {String.fromCharCode(65 + index)}
@@ -389,10 +494,9 @@ const AttemptQuiz = () => {
                   disabled={currentQuestionIndex === 0}
                   className={`
                     flex items-center px-4 py-2 rounded-lg transition-colors duration-200
-                    ${
-                      currentQuestionIndex === 0
-                        ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
-                        : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200"
+                    ${currentQuestionIndex === 0
+                      ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                      : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200"
                     }
                   `}
                 >
@@ -405,10 +509,9 @@ const AttemptQuiz = () => {
                   disabled={currentQuestionIndex === quiz.questions.length - 1}
                   className={`
                     flex items-center px-4 py-2 rounded-lg transition-colors duration-200
-                    ${
-                      currentQuestionIndex === quiz.questions.length - 1
-                        ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
-                        : "bg-blue-500 hover:bg-blue-600 text-white"
+                    ${currentQuestionIndex === quiz.questions.length - 1
+                      ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-600 text-white"
                     }
                   `}
                 >
@@ -453,4 +556,3 @@ const AttemptQuiz = () => {
 }
 
 export default AttemptQuiz
-
