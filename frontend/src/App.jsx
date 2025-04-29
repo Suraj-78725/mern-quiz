@@ -18,6 +18,7 @@ import ProfilePage from './pages/ProfilePage';
 import JoinQuizPage from './pages/JoinQuizPage';
 import HomePage from './pages/HomePage';
 import AiQuizPage from './pages/AiQuizPage';
+import HelpAndResources from './pages/HelpAndResources';
 // import { jwtDecode } from 'jwt-decode';
 
 
@@ -35,12 +36,14 @@ const router = createBrowserRouter([
       { path: '/profile', element: <ProtectedRoute><ProfilePage /></ProtectedRoute> },
       { path: '/join-quiz', element: <ProtectedRoute><JoinQuizPage /></ProtectedRoute> },
       { path: '/ai-quiz', element: <ProtectedRoute><AiQuizPage /></ProtectedRoute> },
+
     ]
   },
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/attempt-quiz/:id', element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute> },
+  { path: '/help', element: <HelpAndResources /> },
 ]);
 
 
