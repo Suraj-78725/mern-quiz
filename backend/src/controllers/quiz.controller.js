@@ -9,8 +9,6 @@ import mongoose from "mongoose";
 import fs from "fs";
 
 const createQuiz = asyncHandler(async (req, res) => {
-  console.log("I am in");
-
   const { title, description, timeLimit } = req.body;
 
   if (!title) throw new ApiError(400, "Title is required");
@@ -104,7 +102,10 @@ const createQuiz = asyncHandler(async (req, res) => {
     title,
     description,
     timeLimit,
-    questions,
+    questions: questions.map(q => ({
+      ...q,
+      marks: q.marks || 1, // Default to 1 mark if not provided
+    })),
     createdBy: req.user._id,
   });
 
@@ -277,6 +278,7 @@ const getLeaderboard = asyncHandler(async (req, res) => {
       new ApiResponse(200, leaderboard, "Leaderboard fetched successfully")
     );
 });
+
 const attemptQuiz = asyncHandler(async (req, res) => {
   const { answers } = req.body;
   const { quizId } = req.params;
@@ -298,7 +300,7 @@ const attemptQuiz = asyncHandler(async (req, res) => {
     const isCorrect =
       question.correctAnswerIndex === answer.selectedOptionIndex;
     if (isCorrect) {
-      score++; // Increment score for correct answers
+      score = score + question.marks; // Increment score for correct answers
     }
     return { ...answer, isCorrect };
   });
@@ -424,7 +426,8 @@ Return JSON only. Strict format:\n
             "questionText": "What is 2 + 2?",
             "options": ["1", "2", "3", "4"],
             "correctAnswerIndex": 3,
-            "explanation": "2 + 2 equals 4."
+            "explanation": "2 + 2 equals 4.",
+            "marks":"1"
         }
     ]
 }`;

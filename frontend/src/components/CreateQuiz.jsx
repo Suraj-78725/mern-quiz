@@ -12,6 +12,7 @@ const CreateQuiz = () => {
   const [questions, setQuestions] = useState([
     {
       questionText: "",
+      questionmarks: 1, // Default marks for each question
       options: ["", "", "", ""],
       correctAnswerIndex: 0,
       explanation: "",
@@ -35,6 +36,12 @@ const CreateQuiz = () => {
     setQuestions(updatedQuestions)
   }
 
+  const handleMarksChange = (index, field, value) => {
+    const updatedQuestions = [...questions];
+    updatedQuestions[index][field] = value; // Update the marks for the specific question
+    setQuestions(updatedQuestions); // Update the state with the modified questions array
+  };
+
   // Handle changes to answer options
   const handleOptionChange = (qIndex, oIndex, value) => {
     const updatedQuestions = [...questions]
@@ -48,6 +55,7 @@ const CreateQuiz = () => {
       ...questions,
       {
         questionText: "",
+        questionmarks: 1, // Default marks for each new question
         options: ["", "", "", ""],
         correctAnswerIndex: 0,
         explanation: "",
@@ -217,6 +225,14 @@ const CreateQuiz = () => {
                   value={q.questionText}
                   onChange={(e) => handleQuestionChange(qIndex, "questionText", e.target.value)}
                   required
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
+                />
+
+                <input
+                  type="number"
+                  placeholder="Enter your marks here"
+                  value={q.questionmarks}
+                  onChange={(e) => handleMarksChange(qIndex, "questionmarks", e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white transition-all"
                 />
 

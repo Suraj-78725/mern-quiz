@@ -95,7 +95,7 @@ const ExplanationPage = () => {
       // Question header - split into multiple lines if too long
       doc.setFontSize(16);
       const questionLines = doc.splitTextToSize(
-        `Question ${index + 1}: ${question?.questionText || ''}`,
+        `Question ${index + 1} (Marks: ${question?.marks || 1}): ${question?.questionText || ''}`,
         maxWidth
       );
       questionLines.forEach(line => {
@@ -111,8 +111,8 @@ const ExplanationPage = () => {
       // Calculate maximum label width
       const labelWidth = Math.max(
         doc.getStringUnitWidth("Your Answer: ") * doc.internal.scaleFactor,
-        doc.getStringUnitWidth("Correct Answer: ") * doc.internal.scaleFactor
-      ) + 5; // Add 5px padding
+        doc.getStringUnitWidth("Correct Answer:   ") * doc.internal.scaleFactor
+      ) + 10; // Add 5px padding
 
       // Your Answer
       doc.setTextColor(0, 0, 0); // Black
@@ -234,7 +234,9 @@ const ExplanationPage = () => {
             <span className="inline-block px-2.5 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs font-medium rounded-md mb-3">
               Question {currentIndex + 1}
             </span>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">{currentQuestion?.questionText}</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              {currentQuestion?.questionText} (Marks: {currentQuestion?.marks || 1})
+            </h2>
             <div className={`p-3 rounded-lg ${userSelectedIndex === currentQuestion.correctAnswerIndex ? 'bg-green-100 dark:bg-green-900/20' : 'bg-red-100 dark:bg-red-900/20'}`}>
               <p>Your Answer: {currentQuestion?.options?.[userSelectedIndex]}</p>
             </div>

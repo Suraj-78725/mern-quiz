@@ -47,6 +47,10 @@ const ResultPage = () => {
             setQuizTitle(latestAttempt.quizId.title);
           }
 
+
+
+
+
           fetchQuizDetails(id, latestAttempt);
         }
       } else {
@@ -61,23 +65,24 @@ const ResultPage = () => {
 
   const fetchQuizDetails = async (quizId, latestAttempt) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${quizId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
 
       const data = await response.json();
+
+
       if (data.success) {
         setQuestions(data.data.questions);
 
-        // Use the latest attempt's score
-        const total = latestAttempt?.score || 0;
-        setTotalScore(total);
+
+        setTotalScore(latestAttempt.score);
 
         // Calculate percentage correctly
-        const maxScore = data.data.questions.length;
-        const calculatedPercentage = maxScore > 0 ? ((total / maxScore) * 100).toFixed(2) : 0;
+        const maxScore = data.data.questions.reduce((acc, question) => acc + (question.marks || 1), 0);
+        const calculatedPercentage = maxScore > 0 ? ((latestAttempt.score / maxScore) * 100).toFixed(2) : 0;
         setPercentage(calculatedPercentage);
 
         // Determine pass/fail status
@@ -133,7 +138,7 @@ const ResultPage = () => {
             <div className="flex-1 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
               <div className="text-sm text-blue-700 dark:text-blue-400 font-medium mb-1">Your Score</div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {totalScore} / {questions.length}
+                {totalScore} / {questions.reduce((acc, question) => acc + (question.marks || 1), 0)}
               </div>
               <div className="text-sm text-gray-500 dark:text-gray-400">
                 {percentage}% correct answers

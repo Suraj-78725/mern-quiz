@@ -443,8 +443,7 @@ const AttemptQuiz = () => {
                   </div>
                 </div>
               </div>
-
-              <h2 className="text-xl font-semibold mb-4">{currentQuestion.questionText}</h2>
+              <h2 className="text-xl font-semibold mb-4">{`${currentQuestion.questionText} (Marks: ${currentQuestion.marks})`}</h2>
 
               {currentQuestion.questionImages?.length > 0 && (
                 <div className="mb-6">

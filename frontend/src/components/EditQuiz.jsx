@@ -50,6 +50,12 @@ const EditQuiz = () => {
     setQuiz({ ...quiz, questions: updatedQuestions });
   };
 
+  const handleMarksChange = (index, field, value) => {
+    const updatedQuestions = [...quiz.questions];
+    updatedQuestions[index][field] = value; // Update the marks for the specific question
+    setQuiz({ ...quiz, questions: updatedQuestions });
+  };
+
   const handleOptionChange = (qIndex, oIndex, value) => {
     const updatedQuestions = [...quiz.questions];
     updatedQuestions[qIndex].options[oIndex] = value;
@@ -244,7 +250,7 @@ const EditQuiz = () => {
                       htmlFor={`question-${qIndex}`}
                       className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
                     >
-                      Question Text
+                      Question Text and marks
                     </label>
                     <input
                       id={`question-${qIndex}`}
@@ -252,6 +258,14 @@ const EditQuiz = () => {
                       value={question.questionText}
                       onChange={(e) => handleQuestionChange(qIndex, "questionText", e.target.value)}
                       placeholder="Enter question text"
+                      className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
+                    />
+                    <input
+                      id={`question-${qIndex}`}
+                      type="number"
+                      value={question.marks}
+                      onChange={(e) => handleMarksChange(qIndex, "marks", e.target.value)}
+                      placeholder="Enter question marks"
                       className="w-full px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors"
                     />
                   </div>

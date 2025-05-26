@@ -25,7 +25,11 @@ const questionSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
-  
+  marks: {
+    type: Number,
+    required: true,
+    default: 1, // Default marks for each question
+  },
 });
 
 const quizSchema = new mongoose.Schema(
