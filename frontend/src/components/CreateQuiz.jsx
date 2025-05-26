@@ -204,7 +204,7 @@ const CreateQuiz = () => {
               className="p-5 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-750 shadow-sm transition-all hover:shadow-md"
             >
               <div className="flex justify-between items-center mb-3">
-                <h4 className="font-medium text-gray-800 dark:text-gray-200">Question {qIndex + 1}</h4>
+                <h4 className="font-medium text-gray-800 dark:text-gray-200">Question {qIndex + 1} and marks</h4>
                 {questions.length > 1 && (
                   <button
                     type="button"
