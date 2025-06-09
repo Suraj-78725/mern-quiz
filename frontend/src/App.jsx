@@ -19,6 +19,8 @@ import JoinQuizPage from './pages/JoinQuizPage';
 import HomePage from './pages/HomePage';
 import AiQuizPage from './pages/AiQuizPage';
 import HelpAndResources from './pages/HelpAndResources';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 // import { jwtDecode } from 'jwt-decode';
 
 
@@ -44,6 +46,8 @@ const router = createBrowserRouter([
   { path: '/register', element: <Register /> },
   { path: '/attempt-quiz/:id', element: <ProtectedRoute><AttemptQuizPage /></ProtectedRoute> },
   { path: '/help', element: <HelpAndResources /> },
+  { path: '/forgot', element: <ForgotPassword /> },
+  { path: '/reset-password/:token', element: <ResetPassword /> }
 ]);
 
 

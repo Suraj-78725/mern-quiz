@@ -29,6 +29,12 @@ const Dashboard = () => {
         },
       });
 
+      // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/my-quizzes`, {
+      //   method: "GET",
+      //   credentials: "include", // <-- sends cookies
+      // });
+
+
       const data = await response.json();
       if (data.success) {
         setQuizzes(data.data);

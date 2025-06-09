@@ -4,7 +4,8 @@ import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-
+import { sendEmail } from "./sendEmail.js";
+import { createHash } from "crypto";
 // Generate access and refresh tokens for user
 const generateTokens = async userId => {
   try {
@@ -239,6 +240,87 @@ const getUserQuizHistory = asyncHandler(async (req, res) => {
     );
 });
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  // console.log("📩 Password reset requested for email:", email);
+
+  // ✅ Validate email early and stop execution if invalid
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    console.log("❌ Invalid or missing email in request.");
+    return res
+      .status(400)
+      .json({ message: "Please provide a valid email address." });
+  }
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found." });
+  }
+
+  const resetToken = user.generateResetPasswordToken();
+  await user.save({ validateBeforeSave: false });
+
+  const resetUrl = `https://mern-quiz-frontend.vercel.app/reset-password/${resetToken}`;
+
+  const message = `
+        <h2>Hello ${user.fullName},</h2>
+        <p>You requested to reset your password.</p>
+        <p>Click the link below to reset it. This link will expire in 10 minutes:</p>
+        <a href="${resetUrl}">Reset Password</a>
+    `;
+
+  try {
+    await sendEmail({
+      to: user.email,
+      subject: "Password Reset Request",
+      html: message,
+    });
+
+    console.log("📧 Email sent to", user.email);
+    res.status(200).json({ message: "Password reset email sent." });
+  } catch (err) {
+    console.error("❌ Failed to send email:", err);
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    res
+      .status(500)
+      .json({ message: "Failed to send reset email. Try again later." });
+  }
+};
+
+const resetPassword = asyncHandler(async (req, res) => {
+  const { token } = req.params;
+  const { password, confirmPassword } = req.body;
+
+  if (!password || !confirmPassword || password !== confirmPassword) {
+    throw new ApiError(400, "Passwords do not match or missing.");
+  }
+
+  const hashedToken = createHash("sha256").update(token).digest("hex");
+
+  const user = await User.findOne({
+    resetPasswordToken: hashedToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    throw new ApiError(400, "Reset token is invalid or has expired");
+  }
+
+  user.password = password;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save();
+
+  res.status(200).json({ message: "Password has been reset successfully." });
+});
+
 export {
   registerUser,
   loginUser,
@@ -248,4 +330,6 @@ export {
   getCurrentUser,
   updateAccountDetails,
   getUserQuizHistory,
+  forgotPassword,
+  resetPassword,
 };

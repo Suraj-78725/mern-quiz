@@ -8,6 +8,8 @@ import {
   getCurrentUser,
   changePassword,
   getUserQuizHistory,
+  forgotPassword,
+  resetPassword,
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -21,5 +23,6 @@ router.route("/update-account").patch(verifyJWT, updateAccountDetails);
 router.get("/current-user", verifyJWT, getCurrentUser);
 router.post("/change-password", verifyJWT, changePassword);
 router.get("/quiz-history", verifyJWT, getUserQuizHistory);
-
+router.post("/forgot-password", forgotPassword);
+router.put("/reset-password/:token", resetPassword);
 export default router;
