@@ -7,7 +7,7 @@ import { toast } from "react-toastify"
 import { LogIn, Loader2, AlertCircle } from "lucide-react"
 
 const Login = () => {
-  const { fetchUser } = useContext(ThemeContext);
+  const { fetchUser, setUser } = useContext(ThemeContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard"; // Fallback to dashboard
@@ -50,9 +50,9 @@ const Login = () => {
       // Log the navigation for debugging
 
       if (response.ok) {
-        await fetchUser()
+        const data = await fetchUser()
+        setUser(data);
         toast.success("Logged in successfully!");
-        console.log(from);
         navigate(from, { replace: true });
       } else {
         setError(result.message || "Login failed");

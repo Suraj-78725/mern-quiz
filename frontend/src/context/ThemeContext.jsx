@@ -38,6 +38,7 @@ export const ThemeProvider = ({ children }) => {
       });
       const data = await response.json();
       setUser(data.success ? data.data : null);
+      return data.success ? data.data : null
     } catch (error) {
       console.error("Error fetching user:", error);
       setUser(null);
