@@ -17,15 +17,11 @@ const Leaderboard = () => {
     try {
       setLoading(true);
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}/leaderboard`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+        credentials: "include", // Include cookies for authentication
       });
       const data = await response.json();
       if (data.success) {
         setLeaderboard(data.data);
-      } else {
-        toast.error(data.message || "Failed to fetch leaderboard.");
       }
     } catch (error) {
       toast.error("An error occurred while fetching the leaderboard.");

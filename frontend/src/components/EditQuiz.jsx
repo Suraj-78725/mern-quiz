@@ -23,9 +23,7 @@ const EditQuiz = () => {
   const fetchQuiz = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/edit/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+        credentials: "include", // Include cookies for authentication
       });
       const data = await response.json();
       if (data.success) {
@@ -108,9 +106,9 @@ const EditQuiz = () => {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify(quiz),
+        credentials: "include", // Include cookies for authentication
       });
 
       const data = await response.json();

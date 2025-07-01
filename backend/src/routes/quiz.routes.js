@@ -14,7 +14,7 @@ import {
 } from "../controllers/quiz.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
-import { checkAllowedEmail } from "../middlewares/checkmail.middleware.js";
+//import { checkAllowedEmail } from "../middlewares/checkmail.middleware.js";
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.get("/user/attempts", verifyJWT, getAttempts);
 // Quiz routes
 router.post("/create", verifyJWT, upload.any(), createQuiz);
 router.get("/my-quizzes", verifyJWT, getUserQuizzes);
-router.post("/generate-quiz", verifyJWT, checkAllowedEmail, generateQuiz);
+router.post("/generate-quiz", verifyJWT, generateQuiz);
 // Routes with parameters
 router.get("/:quizId", verifyJWT, getQuizById);
 router.get("/edit/:quizId", verifyJWT, editQuizById);

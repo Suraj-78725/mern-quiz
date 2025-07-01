@@ -23,16 +23,12 @@ const Dashboard = () => {
 
   const fetchQuizzes = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/my-quizzes`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
 
-      // const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/my-quizzes`, {
-      //   method: "GET",
-      //   credentials: "include", // <-- sends cookies
-      // });
+
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/my-quizzes`, {
+        method: "GET",
+        credentials: "include", // <-- sends cookies
+      });
 
 
       const data = await response.json();
@@ -54,9 +50,7 @@ const Dashboard = () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}/delete`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+        credentials: "include", // Include cookies for authentication
       });
 
       const data = await response.json();

@@ -17,9 +17,7 @@ const ExplanationPage = () => {
       try {
         setLoading(true);
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/edit/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
+          credentials: "include", // Include cookies for authentication
         });
 
         if (!response.ok) {

@@ -102,10 +102,8 @@ const CreateQuiz = () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/create`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
         body: formData,
+        credentials: "include"
       })
 
       const result = await response.json()

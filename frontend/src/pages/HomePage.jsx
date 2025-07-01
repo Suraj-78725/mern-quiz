@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useContext } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import {
   Brain,
@@ -19,6 +19,7 @@ import {
   LogIn,
   UserPlus,
 } from "lucide-react"
+import { ThemeContext } from "../context/ThemeContext"
 
 const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -33,6 +34,8 @@ const HomePage = () => {
   const howItWorksRef = useRef(null)
   const testimonialsRef = useRef(null)
   const faqRef = useRef(null)
+
+  const { user: token } = useContext(ThemeContext)
 
   // Add this CSS to the head of the document
   useEffect(() => {
@@ -84,8 +87,8 @@ const HomePage = () => {
 
   useEffect(() => {
     // Check if user is logged in
-    const token = localStorage.getItem("accessToken")
-    setIsLoggedIn(!!token)
+
+    setIsLoggedIn(!token)
 
     // Auto-rotate featured questions
     const interval = setInterval(() => {

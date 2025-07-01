@@ -7,7 +7,7 @@ import { ThemeContext } from "../context/ThemeContext"
 import { toast } from "react-toastify"
 
 const Navbar = () => {
-  const { theme, setTheme } = useContext(ThemeContext)
+  const { theme, setTheme, setUser } = useContext(ThemeContext)
   const [isOpen, setIsOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const location = useLocation()
@@ -31,15 +31,14 @@ const Navbar = () => {
   }, [isProfileOpen])
 
   const handleLogout = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    // console.log(accessToken);
+
 
     try {
 
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/logout`, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+
           "Content-Type": "application/json", // optional, depends on backend
         },
         credentials: "include", // Ensure cookies are sent
@@ -49,7 +48,7 @@ const Navbar = () => {
 
 
       if (response.ok) {
-        localStorage.removeItem("accessToken"); // Optional, depending on your token storage strategy
+        setUser(null)// Optional, depending on your token storage strategy
         toast.success("Logged out successfully!");
         navigate("/login");
       } else {

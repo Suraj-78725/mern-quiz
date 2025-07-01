@@ -119,8 +119,9 @@ const AttemptQuiz = () => {
   const fetchQuiz = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
+        credentials: "include"
       })
+
       const data = await response.json()
       if (data.success) {
         setQuiz(data.data)
@@ -167,9 +168,9 @@ const AttemptQuiz = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
           body: JSON.stringify({ answers }),
+          credentials: "include", // Include cookies for session management
         })
 
         const data = await response.json()

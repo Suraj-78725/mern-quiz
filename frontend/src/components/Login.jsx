@@ -7,10 +7,12 @@ import { toast } from "react-toastify"
 import { LogIn, Loader2, AlertCircle } from "lucide-react"
 
 const Login = () => {
-  const { theme } = useContext(ThemeContext);
+  const { fetchUser } = useContext(ThemeContext);
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard"; // Fallback to dashboard
+
+
   // console.log(location);
 
   const [identifier, setIdentifier] = useState("");
@@ -43,13 +45,14 @@ const Login = () => {
       });
 
       const result = await response.json();
+      navigate(from, { replace: true });
+
+      // Log the navigation for debugging
 
       if (response.ok) {
-
-        localStorage.setItem("accessToken", result.data.accessToken);
+        await fetchUser()
         toast.success("Logged in successfully!");
-
-        // Redirect to the original page or dashboard
+        console.log(from);
         navigate(from, { replace: true });
       } else {
         setError(result.message || "Login failed");

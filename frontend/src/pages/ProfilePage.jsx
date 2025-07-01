@@ -19,8 +19,8 @@ const ProfilePage = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
+        credentials: "include", // Include cookies in the request
       });
       const data = await response.json();
       if (data.success) {
@@ -51,9 +51,9 @@ const ProfilePage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
         body: JSON.stringify({ oldPassword, newPassword }),
+        credentials: "include", // Include cookies in the request
       });
 
       const data = await response.json();
@@ -108,8 +108,8 @@ const ProfilePage = () => {
 
       {message.text && (
         <div className={`mb-6 p-4 rounded-lg flex items-start gap-3 ${message.type === "success"
-            ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300"
-            : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300"
+          ? "bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-300"
+          : "bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-300"
           }`}>
           {message.type === "success" ? (
             <Check className="h-5 w-5 flex-shrink-0 mt-0.5" />

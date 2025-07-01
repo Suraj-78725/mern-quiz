@@ -22,9 +22,7 @@ const ResultPage = () => {
   const fetchAttempts = async () => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/user/attempts`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+        credentials: "include", // Include cookies for authentication
       });
 
       if (!response.ok) {
@@ -66,9 +64,7 @@ const ResultPage = () => {
   const fetchQuizDetails = async (quizId, latestAttempt) => {
     try {
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/quizzes/${quizId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
+        credentials: "include", // Include cookies for authentication
       });
 
       const data = await response.json();

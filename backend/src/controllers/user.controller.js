@@ -108,8 +108,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
-    sameSite: "None", // Important for cross-origin cookies
-    path: "/", // Clear from all routes
+    sameSite: "Strict",
+    path: "/",
   };
 
   return res

@@ -15,8 +15,8 @@ const HistoryPage = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
+        credentials: "include", // Include cookies for authentication
       });
       const data = await response.json();
       if (data.success) {
