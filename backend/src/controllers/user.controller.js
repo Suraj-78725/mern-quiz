@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { sendEmail } from "./sendEmail.js";
 import { createHash } from "crypto";
+import axios from "axios";
 // Generate access and refresh tokens for user
 const generateTokens = async userId => {
   try {
@@ -48,6 +49,27 @@ const registerUser = asyncHandler(async (req, res) => {
   );
   if (!registeredUser) {
     throw new ApiError(500, "Error registering user");
+  }
+
+  try {
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const chatId = process.env.TELEGRAM_CHAT_ID;
+
+    if (botToken && chatId) {
+      const message = `🎉 New User Registered!\n\nName: ${
+        registeredUser.fullName
+      }\nEmail: ${registeredUser.email}\nUsername: @${
+        registeredUser.username
+      }\nTime: ${new Date().toLocaleString()}`;
+
+      await axios.post(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        chat_id: chatId,
+        text: message,
+      });
+    }
+  } catch (error) {
+    console.error("Telegram notification failed:", error);
+    // Don't throw - notification failure shouldn't break registration
   }
 
   return res
