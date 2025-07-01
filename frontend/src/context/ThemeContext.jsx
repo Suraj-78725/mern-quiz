@@ -29,6 +29,7 @@ export const ThemeProvider = ({ children }) => {
   const fetchUser = async () => {
     try {
       setLoading(true);
+
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/users/current-user`, {
         method: "GET",
         headers: {
