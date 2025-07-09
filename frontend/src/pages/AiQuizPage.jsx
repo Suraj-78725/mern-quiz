@@ -78,6 +78,12 @@ const AIQuizPage = () => {
                 <Sparkles className="text-blue-500" />
                 Generate AI Quiz
             </h1>
+            <p className="text-sm  text-gray-900 dark:text-white mb-8 flex items-center gap-3">
+
+                (Currently we are on vercels free serverless plan,
+                so it may sometimes generate quiz for 5 questions only,or not
+                because of gateway timeout problem, will solve it soon)
+            </p>
 
             {/* Conditional Rendering */}
             {quizGenerated ? (
